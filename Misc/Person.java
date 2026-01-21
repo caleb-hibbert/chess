@@ -1,9 +1,9 @@
 package base;
 
-public classPerson{
+public class Person{
     private String name;
     private int age;
-    private YearInSchool year;
+
 
     public Person(){
         this("",0,YearInSchool.FRESHMAN);
@@ -15,9 +15,18 @@ public classPerson{
         setYear(year);
     }
 
+
+    public String getName(){
+        return name;
+    }
+    public void setName(String name){
+        this.name = name;
+    }
+    //... this can be done by going into code menu, and using generage... how?
+
     @Override
     public String toString(){//allows me to use this instead of hte original tostring method(function
-        return String.format("%s: name=%s, age=%d, year: %s", this.getClass().getName(), name, age, year);
+        return String.format("%s: name=%s, age=%d", this.getClass().getName(), name, age);
         //getclass is important? returns class object for "this", i.e. current class
     }
     @Override
@@ -32,7 +41,7 @@ public classPerson{
             return false;
         }
         Person p = (Person)o; // casting object since .age, .year, .name not part of default equals class?
-        return (name.equals(o.name) && age == 0.age && year == o.year);
+        return (name.equals(o.name) && age == 0.age);
     }
     @Override
     public int hashCode(){
@@ -41,16 +50,22 @@ public classPerson{
     }
 
 
-
-
-
-
-    public String getName(){
-        return name;
+    public final int getPriority(){// use final to prevent subclasses from overriding. works on the entire class to prevent subclasses
+        return agePriority() + categoryPriority();
     }
-    public void setName(String name){
-        this.name = name;
+    protected abstract int agePriority(){// use abstract for class that only acts as a base to pass on methods to subclasses. Can't be used on its own, only by subclasses?
     }
-    //... this can be done by going into code menu, and using generage... how?
+    protected int categoryPriority(){
+        return 1;
+    }
+
 
 }
+
+//Inheretance = class that requires you implement certain methods to use
+//i.e:
+//public class Person implements Moveable, Comparable, Runnable{
+//    public void go(){
+//        //code to make person or moveable or comparable go
+//    }
+//}
