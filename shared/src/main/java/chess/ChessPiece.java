@@ -53,8 +53,8 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        ChessPiece piece = board.getPiece(myPosition);// or use this.getPieceType()?
-        if (piece.getPieceType() == PieceType.BISHOP){
+        ChessPiece piece = board.getPiece(myPosition);
+        if (piece.getPieceType() == PieceType.BISHOP){// use this.getPieceType instead? where does piece come from?
             return List.of(new ChessMove(new ChessPosition(5,4), new ChessPosition(1,8), null));
         }
         // do this ^ for all future moves? How to calculate?
