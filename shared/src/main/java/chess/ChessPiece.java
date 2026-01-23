@@ -48,6 +48,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        //throw new RuntimeException("Not implemented");
         return List.of();// FIXME Different error after adding this than in https://www.youtube.com/watch?v=mTtK8iRXsZo
     }
 }
