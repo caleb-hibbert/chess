@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.Objects;
+
 /**
  * Represents moving a chess piece on a chessboard
  * <p>
@@ -55,8 +57,9 @@ public class ChessMove {
         if (o == null || this.getClass() != o.getClass()) return false;
         ChessMove that = (ChessMove) o;
         return (this.startPosition.equals(that.startPosition) && this.endPosition.equals(that.endPosition) && this.promotionPiece == that.promotionPiece);
-        //FIXME ^ x.equals() won't correctly compare nulls, do we have to worry about start/end position being null?
     }
+
+
 
     @Override
     public int hashCode(){
@@ -69,15 +72,21 @@ public class ChessMove {
         else{
             result = result * 3 + promotionPiece.hashCode();
         }
-        return result;
+        return result;//FIXME does hashcode need to be like this? The generate option is way simpler
     }//FIXME is something wrong w/ hashcode or equals? I'm returning the correct list of start/end positions but the comparison isn't working
 
 
-
-
-
-
-
-
-
+//    @Override
+//    public boolean equals(Object o) {
+//        if (o == null || getClass() != o.getClass()) {
+//            return false;
+//        }
+//        ChessMove chessMove = (ChessMove) o;
+//        return Objects.equals(startPosition, chessMove.startPosition) && Objects.equals(endPosition, chessMove.endPosition) && promotionPiece == chessMove.promotionPiece;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(startPosition, endPosition, promotionPiece);
+//    }
 }

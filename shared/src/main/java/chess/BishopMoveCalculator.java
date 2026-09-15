@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 
-public class BishopMoveCalculator implements PieceMovesCalculator{
+public class  BishopMoveCalculator implements PieceMovesCalculator{
     @Override
     public Collection<ChessMove> calculateMoves(ChessBoard board, ChessPosition position, ChessGame.TeamColor color){
         Collection <ChessMove> possibleMoves = new ArrayList<>(); // The type being ChessMove is already declared at beginning, can leave <> blank for arraylist
