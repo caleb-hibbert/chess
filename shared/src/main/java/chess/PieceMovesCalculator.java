@@ -1,11 +1,11 @@
 package chess;
-
 import java.util.Collection;
-public class PieceMovesCalculator {
+import java.util.List;
 
-    public PieceMovesCalculator(){
 
-    }
+
+public interface PieceMovesCalculator {
+    Collection<ChessMove> calculateMoves(ChessBoard board, ChessPosition piecePosition, ChessGame.TeamColor piceColor);
 
 
 }

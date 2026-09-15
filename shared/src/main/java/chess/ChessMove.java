@@ -45,11 +45,32 @@ public class ChessMove {
 
     @Override
     public String toString(){
-        return String.format("ChessMove toString, start and end positions are: %s,%s", startPosition, endPosition);
+        return String.format("%s%s", startPosition, endPosition);
     }
 
 
+    @Override
+    public boolean equals(Object o){
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        ChessMove that = (ChessMove) o;
+        return (this.startPosition.equals(that.startPosition) && this.endPosition.equals(that.endPosition) && this.promotionPiece == that.promotionPiece);
+        //FIXME ^ x.equals() won't correctly compare nulls, do we have to worry about start/end position being null?
+    }
 
+    @Override
+    public int hashCode(){
+        int result = 17;
+        result = result * 3 + startPosition.hashCode();
+        result = result * 3 + endPosition.hashCode();
+        if (promotionPiece == null){
+            result = result * 3;
+        }
+        else{
+            result = result * 3 + promotionPiece.hashCode();
+        }
+        return result;
+    }//FIXME is something wrong w/ hashcode or equals? I'm returning the correct list of start/end positions but the comparison isn't working
 
 
 

@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Represents a single chess piece
@@ -52,7 +53,17 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        //throw new RuntimeException("Not implemented");
-        return new ArrayList<>(); //- unfinished from class
+        //return new ArrayList<>(); //- unfinished from class -- return List.of();
+//        ChessPiece piece = board.getPiece(myPosition);
+//        if (piece.getPieceType() == PieceType.BISHOP){
+//        }
+
+        ChessPiece piece = board.getPiece(myPosition);
+        if (piece.getPieceType() == PieceType.BISHOP){
+            //return List.of(new ChessMove(new ChessPosition(5,4), new ChessPosition(1,8), null));
+            PieceMovesCalculator calculator = new BishopMoveCalculator();
+            return calculator.calculateMoves(board, myPosition, piece.pieceColor);
+        }
+        return List.of();// deal with non-bishop types for now
     }
 }
