@@ -60,16 +60,36 @@ public class ChessPiece {
 //        }
 
         ChessPiece piece = board.getPiece(myPosition);
-        if (piece.getPieceType() == PieceType.BISHOP){
-            //return List.of(new ChessMove(new ChessPosition(5,4), new ChessPosition(1,8), null));
-            PieceMovesCalculator calculator = new BishopMoveCalculator();
-            return calculator.calculateMoves(board, myPosition, piece.pieceColor);// use "return BishopMoveCalculator.calculateMoves(board, myPosition, piece.pieceColor); for programming test?
-        }
-        else if (piece.getPieceType() == PieceType.ROOK){
-            PieceMovesCalculator calculator = new RookMoveCalculator();
-            return calculator.calculateMoves(board, myPosition, piece.pieceColor);
-        }
-        return List.of();// deal with non-bishop types for now
+//        if (piece.getPieceType() == PieceType.BISHOP){
+//            //return List.of(new ChessMove(new ChessPosition(5,4), new ChessPosition(1,8), null));
+//            PieceMovesCalculator calculator = new BishopMoveCalculator();
+//            return calculator.calculateMoves(board, myPosition, piece.pieceColor);// use "return BishopMoveCalculator.calculateMoves(board, myPosition, piece.pieceColor); for programming test?
+//        }
+//        else if (piece.getPieceType() == PieceType.ROOK){
+//            PieceMovesCalculator calculator = new RookMoveCalculator();
+//            return calculator.calculateMoves(board, myPosition, piece.pieceColor);
+//        }
+
+
+        return switch (piece.getPieceType()) {
+            case BISHOP -> {
+                PieceMovesCalculator calculator = new BishopMoveCalculator();
+                yield calculator.calculateMoves(board, myPosition, piece.pieceColor);
+            }
+            case ROOK -> {
+                PieceMovesCalculator calculator = new RookMoveCalculator();
+                yield calculator.calculateMoves(board, myPosition, piece.pieceColor);
+            }
+            case QUEEN -> {
+                PieceMovesCalculator calculator = new QueenMoveCalculator();
+                yield calculator.calculateMoves(board, myPosition, piece.pieceColor);
+            }
+            case KNIGHT -> {
+                PieceMovesCalculator calculator = new KnightMoveCalculator();
+                yield calculator.calculateMoves(board, myPosition, piece.pieceColor);
+            }
+            default -> List.of();
+        };
     }
 
 
