@@ -73,7 +73,7 @@ public class ChessMove {
             result = result * 3 + promotionPiece.hashCode();
         }
         return result;//FIXME does hashcode need to be like this? The generate option is way simpler
-    }//FIXME is something wrong w/ hashcode or equals? I'm returning the correct list of start/end positions but the comparison isn't working
+    }
 
 
 //    @Override

@@ -65,6 +65,10 @@ public class ChessPiece {
             PieceMovesCalculator calculator = new BishopMoveCalculator();
             return calculator.calculateMoves(board, myPosition, piece.pieceColor);// use "return BishopMoveCalculator.calculateMoves(board, myPosition, piece.pieceColor); for programming test?
         }
+        else if (piece.getPieceType() == PieceType.ROOK){
+            PieceMovesCalculator calculator = new RookMoveCalculator();
+            return calculator.calculateMoves(board, myPosition, piece.pieceColor);
+        }
         return List.of();// deal with non-bishop types for now
     }
 
