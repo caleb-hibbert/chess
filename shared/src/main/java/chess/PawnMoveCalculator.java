@@ -9,8 +9,6 @@ public class PawnMoveCalculator implements PieceMovesCalculator{
     public Collection<ChessMove> calculateMoves(ChessBoard board, ChessPosition position, ChessGame.TeamColor piceColor) {
         Collection<ChessMove> possibleMoves = new ArrayList<>();
 
-
-
         int row = position.getRow();
         int col = position.getColumn();
         int moveDirection = 1;
@@ -29,7 +27,6 @@ public class PawnMoveCalculator implements PieceMovesCalculator{
         }
 
 
-
         // Movement checks
         if (row >= 2 && row <= 7) {// make sure we're at least 1 spot from the edge so moving forward doesn't take us off the board
             if (board.getPiece(new ChessPosition(row + moveDirection, col)) == null) {// if first space in front clear, that's a valid move
@@ -38,15 +35,10 @@ public class PawnMoveCalculator implements PieceMovesCalculator{
                     possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col), ChessPiece.PieceType.BISHOP));
                     possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col), ChessPiece.PieceType.KNIGHT));
                     possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col), ChessPiece.PieceType.QUEEN));
-
-                    // add all promotion moves
-                    //TODO - implement promote - have this run before null check ^ so we don't return a pawn move with no promotion if it tries to move to last tile
                 }
                 else{
                     possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col), null));
                 }
-
-
                 if (row == startingRow && board.getPiece(new ChessPosition(row + moveDirection + moveDirection, col)) == null) {//if on starting row and first space was empty, check next space to validate double move forward
                     possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection + moveDirection, col), null));
                 }
@@ -65,7 +57,6 @@ public class PawnMoveCalculator implements PieceMovesCalculator{
                         possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col-1), ChessPiece.PieceType.BISHOP));
                         possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col-1), ChessPiece.PieceType.KNIGHT));
                         possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col-1), ChessPiece.PieceType.QUEEN));
-                        //TODO - implement promote - have this run before null check ^ so we don't return a pawn move without promotion if it tries to move to last tile
                     }
                     else{
                         possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col - 1), null));
@@ -81,18 +72,13 @@ public class PawnMoveCalculator implements PieceMovesCalculator{
                         possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col+1), ChessPiece.PieceType.BISHOP));
                         possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col+1), ChessPiece.PieceType.KNIGHT));
                         possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col+1), ChessPiece.PieceType.QUEEN));
-                        // TODO - add all promotion moves
                     }
                     else{
                         possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col + 1), null));
-
                     }
                 }
             }
         }
-
-
-
         return possibleMoves;
     }
 }

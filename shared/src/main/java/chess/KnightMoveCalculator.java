@@ -10,7 +10,6 @@ public class KnightMoveCalculator implements PieceMovesCalculator{
     public Collection<ChessMove> calculateMoves(ChessBoard board, ChessPosition position, ChessGame.TeamColor piceColor) {
         Collection<ChessMove> possibleMoves = new ArrayList<>();
 
-
         int[] up_right = {2,1};
         int[] up_left = {2,-1};
         int[] left_up = {1,-2};
@@ -25,7 +24,6 @@ public class KnightMoveCalculator implements PieceMovesCalculator{
             int row = position.getRow() + directions[0];
             int col = position.getColumn() + directions[1];// increment row + col in each direction
 
-
             if (row >= 1 && col >= 1 && row <= 8 && col <= 8){// while in bounds
                 if (board.getPiece(new ChessPosition(row, col)) == null){
                     possibleMoves.add(new ChessMove(new ChessPosition(position.getRow(),position.getColumn()), new ChessPosition(row,col), null));
@@ -39,11 +37,6 @@ public class KnightMoveCalculator implements PieceMovesCalculator{
                 }
             }
         }
-
-
-
-
-
         return possibleMoves;
     }
 }

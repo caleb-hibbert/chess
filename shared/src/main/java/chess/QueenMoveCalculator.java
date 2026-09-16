@@ -39,7 +39,6 @@ public class QueenMoveCalculator implements PieceMovesCalculator{
                 }
             }
         }
-
         return possibleMoves;
     }
 }
