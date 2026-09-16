@@ -59,11 +59,17 @@ public class PawnMoveCalculator implements PieceMovesCalculator{
         if (row >= 2 && row <= 7) {// make sure we're at least 1 spot from the top/bottom so moving forward while attacking doesn't take us off the board
             if (col > 1) {
                 ChessPiece forwardLeftPiece = board.getPiece(new ChessPosition(row + moveDirection, col - 1));
-                if (forwardLeftPiece != null && forwardLeftPiece.getTeamColor() != board.getPiece(position).getTeamColor()) {// some piece is diagonal left to us, check type to see if we can attack it - if piece in our way is opposite color, that spot is a valid move (capture)
+                if (forwardLeftPiece != null && forwardLeftPiece.getTeamColor() != board.getPiece(position).getTeamColor()) {// some piece is diagonal left to us, attack is valid if its color is opposite ours
                     if (row + moveDirection == promotionRow) {
+                        possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col-1), ChessPiece.PieceType.ROOK));
+                        possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col-1), ChessPiece.PieceType.BISHOP));
+                        possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col-1), ChessPiece.PieceType.KNIGHT));
+                        possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col-1), ChessPiece.PieceType.QUEEN));
                         //TODO - implement promote - have this run before null check ^ so we don't return a pawn move without promotion if it tries to move to last tile
                     }
-                    possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col - 1), null));
+                    else{
+                        possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col - 1), null));
+                    }
                 }
             }
             if (col < 8) {
@@ -71,9 +77,16 @@ public class PawnMoveCalculator implements PieceMovesCalculator{
                 ChessPiece forwardRightPiece = board.getPiece(new ChessPosition(row + moveDirection, col + 1));
                 if (forwardRightPiece != null && forwardRightPiece.getTeamColor() != board.getPiece(position).getTeamColor()) {// some piece is diagonal right to us, check type to see if we can attack it - // if piece in our way is opposite color, that spot is a valid move (capture)
                     if (row + moveDirection == promotionRow){
+                        possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col+1), ChessPiece.PieceType.ROOK));
+                        possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col+1), ChessPiece.PieceType.BISHOP));
+                        possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col+1), ChessPiece.PieceType.KNIGHT));
+                        possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col+1), ChessPiece.PieceType.QUEEN));
                         // TODO - add all promotion moves
                     }
-                    possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col + 1), null));
+                    else{
+                        possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col + 1), null));
+
+                    }
                 }
             }
         }
