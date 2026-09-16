@@ -33,7 +33,6 @@ public class ChessBoard { // rows, then columns, counting up and right from bott
      */
     public ChessPiece getPiece(ChessPosition position) {
         return board[position.getRow()-1][position.getColumn()-1];// returns null anyways if no pice is there
-
     }
 
     /**
@@ -42,8 +41,26 @@ public class ChessBoard { // rows, then columns, counting up and right from bott
      */
     public void resetBoard() {
         this.board = new ChessPiece[8][8];
+        this.addPiece(new ChessPosition(1,1), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
+        this.addPiece(new ChessPosition(1,2), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT));
+        this.addPiece(new ChessPosition(1,3), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP));
+        this.addPiece(new ChessPosition(1,4), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN));
+        this.addPiece(new ChessPosition(1,5), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING));
+        this.addPiece(new ChessPosition(1,6), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP));
+        this.addPiece(new ChessPosition(1,7), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT));
+        this.addPiece(new ChessPosition(1,8), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
+
+        for (int i = 1; i < 9; i++){
+            this.addPiece(new ChessPosition(2,i), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
+        }
+        System.out.printf(board.toString());// TODO - remove this after testing done
+
     }
 
+    @Override
+    public String toString() {
+        return "ChessBoard{" + "board=" + Arrays.deepToString(board) +'}';// is the deep tostring necessary?
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -54,8 +71,15 @@ public class ChessBoard { // rows, then columns, counting up and right from bott
         return Objects.deepEquals(board, that.board);
     }
 
+
+
+
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(board);
     }
+
+
 }
+
+
