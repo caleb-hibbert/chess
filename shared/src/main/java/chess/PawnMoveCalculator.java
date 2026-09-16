@@ -33,11 +33,19 @@ public class PawnMoveCalculator implements PieceMovesCalculator{
         // Movement checks
         if (row >= 2 && row <= 7) {// make sure we're at least 1 spot from the edge so moving forward doesn't take us off the board
             if (board.getPiece(new ChessPosition(row + moveDirection, col)) == null) {// if first space in front clear, that's a valid move
-                possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col), null));
-
                 if (row + moveDirection == promotionRow) {
-                    //TODO - implement promote - have this run before null check ^ so we don't return a pawn move without promotion if it tries to move to last tile
+                    possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col), ChessPiece.PieceType.ROOK));
+                    possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col), ChessPiece.PieceType.BISHOP));
+                    possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col), ChessPiece.PieceType.KNIGHT));
+                    possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col), ChessPiece.PieceType.QUEEN));
+
+                    // add all promotion moves
+                    //TODO - implement promote - have this run before null check ^ so we don't return a pawn move with no promotion if it tries to move to last tile
                 }
+                else{
+                    possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col), null));
+                }
+
 
                 if (row == startingRow && board.getPiece(new ChessPosition(row + moveDirection + moveDirection, col)) == null) {//if on starting row and first space was empty, check next space to validate double move forward
                     possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection + moveDirection, col), null));
@@ -52,17 +60,20 @@ public class PawnMoveCalculator implements PieceMovesCalculator{
             if (col > 1) {
                 ChessPiece forwardLeftPiece = board.getPiece(new ChessPosition(row + moveDirection, col - 1));
                 if (forwardLeftPiece != null && forwardLeftPiece.getTeamColor() != board.getPiece(position).getTeamColor()) {// some piece is diagonal left to us, check type to see if we can attack it - if piece in our way is opposite color, that spot is a valid move (capture)
+                    if (row + moveDirection == promotionRow) {
+                        //TODO - implement promote - have this run before null check ^ so we don't return a pawn move without promotion if it tries to move to last tile
+                    }
                     possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col - 1), null));
-                    //TODO - add section on how the pawn will promote if it captures a piece and moves to end of board at the same time
                 }
             }
             if (col < 8) {
                 // attack forward + right
                 ChessPiece forwardRightPiece = board.getPiece(new ChessPosition(row + moveDirection, col + 1));
                 if (forwardRightPiece != null && forwardRightPiece.getTeamColor() != board.getPiece(position).getTeamColor()) {// some piece is diagonal right to us, check type to see if we can attack it - // if piece in our way is opposite color, that spot is a valid move (capture)
+                    if (row + moveDirection == promotionRow){
+                        // TODO - add all promotion moves
+                    }
                     possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col + 1), null));
-                    //TODO - add section on how the pawn will promote if it captures a piece and moves to end of board at the same time
-
                 }
             }
         }
