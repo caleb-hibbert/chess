@@ -92,6 +92,10 @@ public class ChessPiece {
                 PieceMovesCalculator calculator = new KingMoveCalculator();
                 yield calculator.calculateMoves(board, myPosition, piece.pieceColor);
             }
+            case PAWN ->{
+                PieceMovesCalculator calculator = new PawnMoveCalculator();
+                yield calculator.calculateMoves(board, myPosition, piece.pieceColor);
+            }
             default -> List.of();
         };
     }
