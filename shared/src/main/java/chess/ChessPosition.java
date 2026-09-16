@@ -34,14 +34,10 @@ public class ChessPosition {
         return col;
     }
 
-
-
-
     @Override
     public String toString(){
         return String.format("[%d,%d]", row, col);
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -51,6 +47,7 @@ public class ChessPosition {
         ChessPosition that = (ChessPosition) o;
         return row == that.row && col == that.col;
     }
+
 
     @Override
     public int hashCode() {

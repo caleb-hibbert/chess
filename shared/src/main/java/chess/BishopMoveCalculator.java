@@ -9,11 +9,8 @@ public class BishopMoveCalculator implements PieceMovesCalculator{
     public Collection<ChessMove> calculateMoves(ChessBoard board, ChessPosition position, ChessGame.TeamColor color){
         Collection <ChessMove> possibleMoves = new ArrayList<>(); // The type being ChessMove is already declared at beginning, can leave <> blank for arraylist
 
-        //possibleMoves.add(new ChessMove(new ChessPosition(1,1), new ChessPosition(2,2), null));
-
         // check up+right - if spot empty and in bounds, add to possiblemoves
         // if spot filled with piece, check type. If opposite type of piece, add to possiblemoves
-
         int[] up_right = {1,1};
         int[] up_left = {1,-1};
         int[] down_left = {-1,-1};

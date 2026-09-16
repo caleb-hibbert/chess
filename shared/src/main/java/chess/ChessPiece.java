@@ -54,11 +54,6 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        //return new ArrayList<>(); //- unfinished from class -- return List.of();
-//        ChessPiece piece = board.getPiece(myPosition);
-//        if (piece.getPieceType() == PieceType.BISHOP){
-//        }
-
         ChessPiece piece = board.getPiece(myPosition);
 //        if (piece.getPieceType() == PieceType.BISHOP){
 //            //return List.of(new ChessMove(new ChessPosition(5,4), new ChessPosition(1,8), null));
@@ -96,7 +91,7 @@ public class ChessPiece {
                 PieceMovesCalculator calculator = new PawnMoveCalculator();
                 yield calculator.calculateMoves(board, myPosition, piece.pieceColor);
             }
-            default -> List.of();
+            //default -> List.of();
         };
     }
 
