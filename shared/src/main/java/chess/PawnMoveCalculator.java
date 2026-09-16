@@ -36,7 +36,7 @@ public class PawnMoveCalculator implements PieceMovesCalculator{
                 possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col), null));
 
                 if (row + moveDirection == promotionRow) {
-                    //implement promote
+                    //TODO - implement promote - have this run before null check ^ so we don't return a pawn move without promotion if it tries to move to last tile
                 }
 
                 if (row == startingRow && board.getPiece(new ChessPosition(row + moveDirection + moveDirection, col)) == null) {//if on starting row and first space was empty, check next space to validate double move forward
@@ -53,6 +53,7 @@ public class PawnMoveCalculator implements PieceMovesCalculator{
                 ChessPiece forwardLeftPiece = board.getPiece(new ChessPosition(row + moveDirection, col - 1));
                 if (forwardLeftPiece != null && forwardLeftPiece.getTeamColor() != board.getPiece(position).getTeamColor()) {// some piece is diagonal left to us, check type to see if we can attack it - if piece in our way is opposite color, that spot is a valid move (capture)
                     possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col - 1), null));
+                    //TODO - add section on how the pawn will promote if it captures a piece and moves to end of board at the same time
                 }
             }
             if (col < 8) {
@@ -60,6 +61,8 @@ public class PawnMoveCalculator implements PieceMovesCalculator{
                 ChessPiece forwardRightPiece = board.getPiece(new ChessPosition(row + moveDirection, col + 1));
                 if (forwardRightPiece != null && forwardRightPiece.getTeamColor() != board.getPiece(position).getTeamColor()) {// some piece is diagonal right to us, check type to see if we can attack it - // if piece in our way is opposite color, that spot is a valid move (capture)
                     possibleMoves.add(new ChessMove(new ChessPosition(row, col), new ChessPosition(row + moveDirection, col + 1), null));
+                    //TODO - add section on how the pawn will promote if it captures a piece and moves to end of board at the same time
+
                 }
             }
         }
