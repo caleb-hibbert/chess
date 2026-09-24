@@ -20,6 +20,7 @@ public class KingMoveCalculator implements PieceMovesCalculator{
         int[] downRight = {-1,1};
         int[][] movableDirections = {up,down,left,right,upRight, upLeft, downLeft, downRight};
 
+
         for (int[] direction : movableDirections){
             int row = position.getRow() + direction[0];
             int col = position.getColumn() + direction[1];

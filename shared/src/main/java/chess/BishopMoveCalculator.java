@@ -17,26 +17,6 @@ public class BishopMoveCalculator implements PieceMovesCalculator{
         int[] down_right = {-1,1};
         int[][] movableDirections = {up_left, up_right, down_left, down_right};
 
-        for (int[] directions : movableDirections){
-            int row = position.getRow() + directions[0];
-            int col = position.getColumn() + directions[1];// increment row + col in each direction
-
-            while (row >= 1 && col >= 1 && row <= 8 && col <= 8){// while in bounds
-                if (board.getPiece(new ChessPosition(row, col)) == null){
-                    possibleMoves.add(new ChessMove(new ChessPosition(position.getRow(),position.getColumn()), new ChessPosition(row,col), null));
-                    row += directions[0];
-                    col += directions[1];
-                }
-                else if (board.getPiece(new ChessPosition(row, col)) != null){// piece was found where we want to go
-                    ChessPiece piece_in_way = board.getPiece(new ChessPosition(row, col));
-                    if (piece_in_way.getTeamColor() != board.getPiece(position).getTeamColor()){
-                        // if piece in our way is opposite color, that spot is a valid move (capture), then end checking in this direction
-                        possibleMoves.add(new ChessMove(new ChessPosition(position.getRow(),position.getColumn()), new ChessPosition(row,col), null));
-                    }
-                    break;
-                }
-            }
-        }
-        return possibleMoves;
+        return RepeatedMoveCalculator.calculateMoves(board, position, color, movableDirections);
     }
 }
