@@ -30,7 +30,8 @@ public class KnightMoveCalculator implements PieceMovesCalculator{
                 }
                 else if (board.getPiece(new ChessPosition(row, col)) != null){// piece was found where we want to go
                     ChessPiece piece_in_way = board.getPiece(new ChessPosition(row, col));
-                    if (piece_in_way.getTeamColor() != board.getPiece(position).getTeamColor()){// if piece in our way is opposite color, that spot is a valid move (capture), then end checking in this direction
+                    if (piece_in_way.getTeamColor() != board.getPiece(position).getTeamColor()){
+                        // if piece in way is enemy, that spot is a valid move (capture)
                         possibleMoves.add(new ChessMove(new ChessPosition(position.getRow(),position.getColumn()), new ChessPosition(row,col), null));
                     }
 

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class BishopMoveCalculator implements PieceMovesCalculator{
     @Override
     public Collection<ChessMove> calculateMoves(ChessBoard board, ChessPosition position, ChessGame.TeamColor color){
-        Collection <ChessMove> possibleMoves = new ArrayList<>(); // The type being ChessMove is already declared at beginning, can leave <> blank for arraylist
+        Collection <ChessMove> possibleMoves = new ArrayList<>();
 
         // check up+right - if spot empty and in bounds, add to possiblemoves
         // if spot filled with piece, check type. If opposite type of piece, add to possiblemoves
@@ -29,7 +29,8 @@ public class BishopMoveCalculator implements PieceMovesCalculator{
                 }
                 else if (board.getPiece(new ChessPosition(row, col)) != null){// piece was found where we want to go
                     ChessPiece piece_in_way = board.getPiece(new ChessPosition(row, col));
-                    if (piece_in_way.getTeamColor() != board.getPiece(position).getTeamColor()){// if piece in our way is opposite color, that spot is a valid move (capture), then end checking in this direction
+                    if (piece_in_way.getTeamColor() != board.getPiece(position).getTeamColor()){
+                        // if piece in our way is opposite color, that spot is a valid move (capture), then end checking in this direction
                         possibleMoves.add(new ChessMove(new ChessPosition(position.getRow(),position.getColumn()), new ChessPosition(row,col), null));
                     }
                     break;

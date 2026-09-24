@@ -55,16 +55,6 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
-//        if (piece.getPieceType() == PieceType.BISHOP){
-//            //return List.of(new ChessMove(new ChessPosition(5,4), new ChessPosition(1,8), null));
-//            PieceMovesCalculator calculator = new BishopMoveCalculator();
-//            return calculator.calculateMoves(board, myPosition, piece.pieceColor);// use "return BishopMoveCalculator.calculateMoves(board, myPosition, piece.pieceColor); for programming test?
-//        }
-//        else if (piece.getPieceType() == PieceType.ROOK){
-//            PieceMovesCalculator calculator = new RookMoveCalculator();
-//            return calculator.calculateMoves(board, myPosition, piece.pieceColor);
-//        }
-
 
         return switch (piece.getPieceType()) {
             case BISHOP -> {
@@ -91,7 +81,6 @@ public class ChessPiece {
                 PieceMovesCalculator calculator = new PawnMoveCalculator();
                 yield calculator.calculateMoves(board, myPosition, piece.pieceColor);
             }
-            //default -> List.of();
         };
     }
 

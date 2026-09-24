@@ -43,7 +43,6 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-
         return promotionPiece;
     }
 
@@ -56,40 +55,17 @@ public class ChessMove {
 
 
     @Override
-    public boolean equals(Object o){
-        if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
-        ChessMove that = (ChessMove) o;
-        return (this.startPosition.equals(that.startPosition) && this.endPosition.equals(that.endPosition) && this.promotionPiece == that.promotionPiece);
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessMove chessMove = (ChessMove) o;
+        return Objects.equals(startPosition, chessMove.startPosition) && Objects.equals(endPosition, chessMove.endPosition) && promotionPiece == chessMove.promotionPiece;
     }
 
 
     @Override
-    public int hashCode(){
-        int result = 17;
-        result = result * 3 + startPosition.hashCode();
-        result = result * 3 + endPosition.hashCode();
-        if (promotionPiece == null){
-            result = result * 3;
-        }
-        else{
-            result = result * 3 + promotionPiece.hashCode();
-        }
-        return result;//FIXME does hashcode need to be like this? The generate option is way simpler
+    public int hashCode() {
+        return Objects.hash(startPosition, endPosition, promotionPiece);
     }
-
-
-//    @Override
-//    public boolean equals(Object o) {
-//        if (o == null || getClass() != o.getClass()) {
-//            return false;
-//        }
-//        ChessMove chessMove = (ChessMove) o;
-//        return Objects.equals(startPosition, chessMove.startPosition) && Objects.equals(endPosition, chessMove.endPosition) && promotionPiece == chessMove.promotionPiece;
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(startPosition, endPosition, promotionPiece);
-//    }
 }
