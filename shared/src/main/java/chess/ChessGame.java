@@ -50,7 +50,11 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {//remove moves that would cause check/checkmate issues
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> allPossibleMoves = board.getPiece(startPosition).pieceMoves(board, startPosition);
+
+        System.out.printf("List of moves we returned that were valid: %s\n", allPossibleMoves.toString());
+        return allPossibleMoves;
+        //throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -60,7 +64,18 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> validMovesList = validMoves(move.getStartPosition());
+        if (validMovesList.contains(move)){
+            ChessPiece piece = board.getPiece(move.getStartPosition());
+            board.removePiece(move.getStartPosition());
+            board.removePiece(move.getEndPosition());
+            board.addPiece(move.getEndPosition(), piece);
+            System.out.printf("The move %s was completed\n", move.toString());
+        }
+        else{
+            throw new InvalidMoveException("The move " + move.toString() + " wasn't in the list of valid moves. That list was: " + validMovesList.toString());
+        }
+
     }
 
     /**
@@ -70,6 +85,22 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        ChessPiece king = null;
+        ChessBoard board = getBoard();
+        ChessPosition kingPosition;
+        for (int i = 0; i < 8; i++){// iterate over rows
+            for (int j = 0; j < 8; j++){//iterate over columns
+                ChessPiece pieceToCheck = board.getPiece(new ChessPosition(i+1,j+1));
+                if (pieceToCheck != null && pieceToCheck.getPieceType() == ChessPiece.PieceType.KING && pieceToCheck.getTeamColor() == teamColor){
+                    king = pieceToCheck;
+                    kingPosition = new ChessPosition(i+1,j+1);
+                }
+            }
+        }
+
+        
+
+
         throw new RuntimeException("Not implemented");
     }
 

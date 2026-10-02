@@ -25,6 +25,10 @@ public class ChessBoard { // rows, then columns, counting up and right from bott
         board[position.getRow()-1][position.getColumn()-1] = piece;
     }
 
+    public void removePiece(ChessPosition position) {
+        board[position.getRow() - 1][position.getColumn() - 1] = null;
+    }
+
     /**
      * Gets a chess piece on the chessboard
      *
