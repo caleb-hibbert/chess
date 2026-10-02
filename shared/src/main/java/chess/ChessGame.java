@@ -3,6 +3,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
+
 /**
  * A class that can manage a chess game, making moves on a board
  * <p>
@@ -52,7 +53,7 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {//remove moves that would cause check/checkmate issues
         Collection<ChessMove> allPossibleMoves = board.getPiece(startPosition).pieceMoves(board, startPosition);
 
-        System.out.printf("List of moves we returned that were valid: %s\n", allPossibleMoves.toString());
+        System.out.printf("List of moves we returned that were valid: %s\n", allPossibleMoves.toString());//for testing only
         return allPossibleMoves;
         //throw new RuntimeException("Not implemented");
     }
@@ -78,16 +79,13 @@ public class ChessGame {
 
     }
 
-    /**
-     * Determines if the given team is in check
-     *
-     * @param teamColor which team to check for check
-     * @return True if the specified team is in check
-     */
-    public boolean isInCheck(TeamColor teamColor) {
-        ChessPiece king = null;
+
+    public record Result(ChessPiece king, ChessPosition kingPosition) {}
+
+    public Result getKingInfo(TeamColor teamColor){//returns the king piece and position for the check/checkmate/stalemate methods
+        chess.ChessPiece king = null;
         ChessBoard board = getBoard();
-        ChessPosition kingPosition;
+        ChessPosition kingPosition = null;
         for (int i = 0; i < 8; i++){// iterate over rows
             for (int j = 0; j < 8; j++){//iterate over columns
                 ChessPiece pieceToCheck = board.getPiece(new ChessPosition(i+1,j+1));
@@ -97,8 +95,22 @@ public class ChessGame {
                 }
             }
         }
+        return new Result(king, kingPosition);
+    }
 
-        
+    /**
+     * Determines if the given team is in check
+     *
+     * @param teamColor which team to check for check
+     * @return True if the specified team is in check
+     */
+    public boolean isInCheck(TeamColor teamColor) {
+        Result result = getKingInfo(teamColor);
+        ChessPiece king = result.king;
+        ChessPosition kingPosition = result.kingPosition;
+        //TODO - we have king color/piece/position, now we need to get the original list of "valid moves" that end here to see if we're in check?
+
+
 
 
         throw new RuntimeException("Not implemented");
