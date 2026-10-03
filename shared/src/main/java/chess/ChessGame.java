@@ -1,7 +1,5 @@
 package chess;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 
 /**
@@ -17,7 +15,9 @@ public class ChessGame {
     public ChessGame() {
         board = new ChessBoard();
         board.resetBoard();
+        currentTeamTurn = TeamColor.WHITE;
     }
+
 
     /**
      * @return Which team's turn it is
@@ -58,6 +58,15 @@ public class ChessGame {
         //throw new RuntimeException("Not implemented");
     }
 
+    private void changeTeamTurn(){
+        if (currentTeamTurn == TeamColor.WHITE){
+            setTeamTurn(TeamColor.BLACK);
+        }
+        else if (currentTeamTurn == TeamColor.BLACK){
+            setTeamTurn(TeamColor.WHITE);
+        }
+    }
+
     /**
      * Makes a move in the chess game
      *
@@ -71,6 +80,7 @@ public class ChessGame {
             board.removePiece(move.getStartPosition());
             board.removePiece(move.getEndPosition());
             board.addPiece(move.getEndPosition(), piece);
+            changeTeamTurn();
             System.out.printf("The move %s was completed\n", move.toString());
         }
         else{
@@ -83,7 +93,7 @@ public class ChessGame {
     public record Result(ChessPiece king, ChessPosition kingPosition) {}
 
     public Result getKingInfo(TeamColor teamColor){//returns the king piece and position for the check/checkmate/stalemate methods
-        chess.ChessPiece king = null;
+        ChessPiece king = null;
         ChessBoard board = getBoard();
         ChessPosition kingPosition = null;
         for (int i = 0; i < 8; i++){// iterate over rows
@@ -98,6 +108,41 @@ public class ChessGame {
         return new Result(king, kingPosition);
     }
 
+
+    private Collection<ChessMove> getSafeKingMoves(ChessPiece king, ChessPosition kingPosition, TeamColor teamColor){
+        Collection<ChessMove> proposedKingMoves = king.pieceMoves(board, kingPosition);
+        Collection<ChessMove> safeKingMoves = new ArrayList<>();
+
+        for (ChessMove singleProposedKingMove : proposedKingMoves){
+            ChessBoard tempBoard = new ChessBoard(board);//makes a copy of original board w/copy constructor
+            tempBoard.removePiece(kingPosition);
+            tempBoard.removePiece(singleProposedKingMove.getEndPosition());
+            tempBoard.addPiece(singleProposedKingMove.getEndPosition(), king);
+            for (int i = 0; i < 8; i++){// iterate over rows
+                for (int j = 0; j < 8; j++){//iterate over columns
+                    ChessPiece pieceToCheck = tempBoard.getPiece(new ChessPosition(i+1,j+1));
+                    if (pieceToCheck != null && pieceToCheck.getTeamColor() != teamColor){// if space has enemy piece, get its moves and see if it can attack our king on the temp board
+                        Collection<ChessMove> enemyMoves = pieceToCheck.pieceMoves(tempBoard, kingPosition);
+                        for (ChessMove move : enemyMoves){
+                            if (move.getEndPosition() == singleProposedKingMove.getEndPosition()){
+                                break; // if enemy piece can move where temp king is standing, the king can't go here
+                            }
+                            else{
+                                safeKingMoves.add(singleProposedKingMove);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return safeKingMoves;
+    }
+
+
+
+
+
+
     /**
      * Determines if the given team is in check
      *
@@ -108,6 +153,10 @@ public class ChessGame {
         Result result = getKingInfo(teamColor);
         ChessPiece king = result.king;
         ChessPosition kingPosition = result.kingPosition;
+        Collection<ChessMove> safeKingMoves = getSafeKingMoves(king,kingPosition, teamColor);
+
+
+
         //TODO - we have king color/piece/position, now we need to get the original list of "valid moves" that end here to see if we're in check?
 
 

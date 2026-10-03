@@ -11,8 +11,16 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessBoard { // rows, then columns, counting up and right from bottom left
-        private ChessPiece[][] board = new ChessPiece[8][8];// 8x8 array that holds chesspiece objects
-        public ChessBoard(){
+    private ChessPiece[][] board = new ChessPiece[8][8];// 8x8 array that holds chesspiece objects
+    public ChessBoard(){
+    }
+
+    public ChessBoard(ChessBoard boardToCopy){
+        for (int i = 0; i < 8; i++){// iterate over rows
+            for (int j = 0; j < 8; j++){//iterate over columns
+                this.board[i][j] = boardToCopy.board[i][j];
+            }
+        }
     }
 
     /**
