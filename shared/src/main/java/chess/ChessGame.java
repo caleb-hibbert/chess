@@ -174,7 +174,20 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessBoard tempBoard = new ChessBoard(board);//makes a copy of original board w/copy constructor
+        Result result = getKingInfo(teamColor);
+        ChessPiece king = result.king;
+        ChessPosition kingPosition = result.kingPosition;
+        boolean currentlyInDanger = checkIfEnemyCanAttackHere(tempBoard, kingPosition, teamColor);
+        Collection<ChessMove> safeKingMoves = getSafeKingMoves(king,kingPosition, teamColor);
+        if (safeKingMoves.isEmpty() && currentlyInDanger){
+            return true;
+        }
+        else{
+            return false;
+        }
+
+
     }
 
     /**
