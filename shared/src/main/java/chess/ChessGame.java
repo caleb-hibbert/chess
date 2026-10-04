@@ -1,6 +1,6 @@
 package chess;
 import java.util.*;
-
+import java.util.Set;
 
 /**
  * A class that can manage a chess game, making moves on a board
@@ -52,10 +52,25 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {//remove moves that would cause check/checkmate issues
         Collection<ChessMove> allPossibleMoves = board.getPiece(startPosition).pieceMoves(board, startPosition);
+        Collection<ChessMove> allValidMoves = new ArrayList<>();
+
+        for (ChessMove move : allPossibleMoves){
+            ChessBoard tempBoard = new ChessBoard(board);//makes a copy of original board w/copy constructor
+            ChessPiece piece = board.getPiece(move.getStartPosition());//this can be shortened by just passing in startPosition if needed
+            tempBoard.removePiece(move.getStartPosition());
+            tempBoard.removePiece(move.getEndPosition());
+            tempBoard.addPiece(move.getEndPosition(), piece);
+            if (isInCheck(piece.getTeamColor())){//if we make a move and find that the king ends up in check, discard that move
+                continue;
+            }
+            else{
+                allValidMoves.add(move);
+            }
+        }
+
 
         System.out.printf("List of moves we returned that were valid: %s\n", allPossibleMoves.toString());//for testing only
-        return allPossibleMoves;
-        //throw new RuntimeException("Not implemented");
+        return allValidMoves;
     }
 
     private void changeTeamTurn(){
