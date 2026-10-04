@@ -51,16 +51,19 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {//remove moves that would cause check/checkmate issues
+        if (board.getPiece(startPosition) == null){
+            return null;
+        }
         Collection<ChessMove> allPossibleMoves = board.getPiece(startPosition).pieceMoves(board, startPosition);
         Collection<ChessMove> allValidMoves = new ArrayList<>();
 
         for (ChessMove move : allPossibleMoves){
             ChessBoard tempBoard = new ChessBoard(board);//makes a copy of original board w/copy constructor
-            ChessPiece piece = board.getPiece(move.getStartPosition());//this can be shortened by just passing in startPosition if needed
+            ChessPiece piece = tempBoard.getPiece(move.getStartPosition());//this can be shortened by just passing in startPosition if needed
             tempBoard.removePiece(move.getStartPosition());
             tempBoard.removePiece(move.getEndPosition());
             tempBoard.addPiece(move.getEndPosition(), piece);
-            if (isInCheck(piece.getTeamColor())){//if we make a move and find that the king ends up in check, discard that move
+            if (isInCheck(tempBoard, piece.getTeamColor())){//if we make a move and find that the king ends up in check, discard that move
                 continue;
             }
             else{
@@ -69,7 +72,7 @@ public class ChessGame {
         }
 
 
-        System.out.printf("List of moves we returned that were valid: %s\n", allPossibleMoves.toString());//for testing only
+        //System.out.printf("List of moves we returned that were valid: %s\n", allPossibleMoves.toString());//for testing only
         return allValidMoves;
     }
 
@@ -89,14 +92,21 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+
+        if (piece == null){
+            throw new InvalidMoveException("The move " + move.toString() + " didn't have a piece in the starting position");
+        }
+        if (piece.getTeamColor() != currentTeamTurn){
+            throw new InvalidMoveException("The move " + move.toString() + " couldn't be done since it's currently " + currentTeamTurn + "'s turn");
+        }
         Collection<ChessMove> validMovesList = validMoves(move.getStartPosition());
         if (validMovesList.contains(move)){
-            ChessPiece piece = board.getPiece(move.getStartPosition());
             board.removePiece(move.getStartPosition());
             board.removePiece(move.getEndPosition());
             board.addPiece(move.getEndPosition(), piece);
             changeTeamTurn();
-            System.out.printf("The move %s was completed\n", move.toString());
+            //System.out.printf("The move %s was completed\n", move.toString());
         }
         else{
             throw new InvalidMoveException("The move " + move.toString() + " wasn't in the list of valid moves. That list was: " + validMovesList.toString());
@@ -125,13 +135,11 @@ public class ChessGame {
 
 
     private boolean checkIfEnemyCanAttackHere(ChessBoard boardToCheck, ChessPosition position, TeamColor teamColor){
-        ChessBoard tempBoard = new ChessBoard(boardToCheck);//makes a copy of original board w/copy constructor
-
         for (int i = 0; i < 8; i++){// iterate over rows
             for (int j = 0; j < 8; j++){//iterate over columns
-                ChessPiece pieceToCheck = tempBoard.getPiece(new ChessPosition(i+1,j+1));
+                ChessPiece pieceToCheck = boardToCheck.getPiece(new ChessPosition(i+1,j+1));
                 if (pieceToCheck != null && pieceToCheck.getTeamColor() != teamColor){// if space has enemy piece, get its moves and see if it can attack our king on the temp board
-                    Collection<ChessMove> enemyMoves = pieceToCheck.pieceMoves(tempBoard, new ChessPosition(i+1,j+1));
+                    Collection<ChessMove> enemyMoves = pieceToCheck.pieceMoves(boardToCheck, new ChessPosition(i+1,j+1));
                     for (ChessMove move : enemyMoves){
                         if (move.getEndPosition().equals(position)){
                             return true; // enemy piece can attack this position
@@ -144,27 +152,40 @@ public class ChessGame {
     }
 
 
-    private Collection<ChessMove> getSafeKingMoves(ChessPiece king, ChessPosition kingPosition, TeamColor teamColor){
-        Collection<ChessMove> proposedKingMoves = king.pieceMoves(board, kingPosition);
-        Collection<ChessMove> safeKingMoves = new ArrayList<>();
+//    private Collection<ChessMove> getSafeKingMoves(ChessPiece king, ChessPosition kingPosition, TeamColor teamColor){
+//        Collection<ChessMove> proposedKingMoves = king.pieceMoves(board, kingPosition);
+//        Collection<ChessMove> safeKingMoves = new ArrayList<>();
+//
+//        for (ChessMove singleProposedKingMove : proposedKingMoves){
+//            ChessBoard tempBoard = new ChessBoard(board);//makes a copy of original board w/copy constructor
+//            tempBoard.removePiece(kingPosition);
+//            tempBoard.removePiece(singleProposedKingMove.getEndPosition());
+//            tempBoard.addPiece(singleProposedKingMove.getEndPosition(), king);
+//            if (checkIfEnemyCanAttackHere(tempBoard, singleProposedKingMove.getEndPosition(), teamColor)){
+//                continue;
+//            }
+//            else{
+//                safeKingMoves.add(singleProposedKingMove);
+//            }
+//        }
+//        return safeKingMoves;
+//    }
 
-        for (ChessMove singleProposedKingMove : proposedKingMoves){
-            ChessBoard tempBoard = new ChessBoard(board);//makes a copy of original board w/copy constructor
-            tempBoard.removePiece(kingPosition);
-            tempBoard.removePiece(singleProposedKingMove.getEndPosition());
-            tempBoard.addPiece(singleProposedKingMove.getEndPosition(), king);
-            if (checkIfEnemyCanAttackHere(tempBoard, singleProposedKingMove.getEndPosition(), teamColor)){
-                continue;
-            }
-            else{
-                safeKingMoves.add(singleProposedKingMove);
+
+    private boolean teamHasValidMoveOptions(TeamColor teamColor){
+        for (int i = 0; i < 8; i++){// iterate over rows
+            for (int j = 0; j < 8; j++){//iterate over columns
+                ChessPiece pieceToCheck = board.getPiece(new ChessPosition(i+1,j+1));
+                if (pieceToCheck != null && pieceToCheck.getTeamColor() == teamColor){// if space has one of our pieces, see if it can make a move that doesn't result in check/checkmate, or resolves check/checkmate
+                    Collection<ChessMove> friendlyValidMoves = validMoves(new ChessPosition(i+1,j+1));
+                    if (friendlyValidMoves.isEmpty()){
+                        return false;
+                    }
+                }
             }
         }
-        return safeKingMoves;
+        return true;
     }
-
-
-
 
 
 
@@ -175,11 +196,17 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        ChessBoard tempBoard = new ChessBoard(board);//makes a copy of original board w/copy constructor
         Result result = getKingInfo(teamColor);
         ChessPiece king = result.king;
         ChessPosition kingPosition = result.kingPosition;
-        return checkIfEnemyCanAttackHere(tempBoard, kingPosition, teamColor);
+
+        return checkIfEnemyCanAttackHere(board, kingPosition, teamColor);
+    }
+    private boolean isInCheck(ChessBoard boardToCheck, TeamColor teamColor){
+        Result result = getKingInfo(teamColor);
+        ChessPiece king = result.king;
+        ChessPosition kingPosition = result.kingPosition;
+        return checkIfEnemyCanAttackHere(boardToCheck, kingPosition, teamColor);
     }
 
     /**
@@ -189,13 +216,13 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        ChessBoard tempBoard = new ChessBoard(board);//makes a copy of original board w/copy constructor
         Result result = getKingInfo(teamColor);
         ChessPiece king = result.king;
         ChessPosition kingPosition = result.kingPosition;
-        boolean currentlyInDanger = checkIfEnemyCanAttackHere(tempBoard, kingPosition, teamColor);
-        Collection<ChessMove> safeKingMoves = getSafeKingMoves(king,kingPosition, teamColor);
-        if (safeKingMoves.isEmpty() && currentlyInDanger){
+        boolean currentlyInDanger = checkIfEnemyCanAttackHere(board, kingPosition, teamColor);
+        //Collection<ChessMove> safeKingMoves = getSafeKingMoves(king,kingPosition, teamColor);
+
+        if (currentlyInDanger && !teamHasValidMoveOptions(teamColor)){
             return true;
         }
         else{
@@ -213,13 +240,12 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        ChessBoard tempBoard = new ChessBoard(board);//makes a copy of original board w/copy constructor
         Result result = getKingInfo(teamColor);
         ChessPiece king = result.king;
         ChessPosition kingPosition = result.kingPosition;
-        boolean currentlyInDanger = checkIfEnemyCanAttackHere(tempBoard, kingPosition, teamColor);
-        Collection<ChessMove> safeKingMoves = getSafeKingMoves(king,kingPosition, teamColor);
-        if (safeKingMoves.isEmpty() && !currentlyInDanger){
+        boolean currentlyInDanger = checkIfEnemyCanAttackHere(board, kingPosition, teamColor);
+        //Collection<ChessMove> safeKingMoves = getSafeKingMoves(king,kingPosition, teamColor);
+        if (!currentlyInDanger && teamHasValidMoveOptions(teamColor)){
             return true;
         }
         else{
