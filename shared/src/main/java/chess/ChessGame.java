@@ -70,9 +70,6 @@ public class ChessGame {
                 allValidMoves.add(move);
             }
         }
-
-
-        //System.out.printf("List of moves we returned that were valid: %s\n", allPossibleMoves.toString());//for testing only
         return allValidMoves;
     }
 
@@ -179,26 +176,6 @@ public class ChessGame {
     }
 
 
-//    private Collection<ChessMove> getSafeKingMoves(ChessPiece king, ChessPosition kingPosition, TeamColor teamColor){
-//        Collection<ChessMove> proposedKingMoves = king.pieceMoves(board, kingPosition);
-//        Collection<ChessMove> safeKingMoves = new ArrayList<>();
-//
-//        for (ChessMove singleProposedKingMove : proposedKingMoves){
-//            ChessBoard tempBoard = new ChessBoard(board);//makes a copy of original board w/copy constructor
-//            tempBoard.removePiece(kingPosition);
-//            tempBoard.removePiece(singleProposedKingMove.getEndPosition());
-//            tempBoard.addPiece(singleProposedKingMove.getEndPosition(), king);
-//            if (checkIfEnemyCanAttackHere(tempBoard, singleProposedKingMove.getEndPosition(), teamColor)){
-//                continue;
-//            }
-//            else{
-//                safeKingMoves.add(singleProposedKingMove);
-//            }
-//        }
-//        return safeKingMoves;
-//    }
-
-
     private boolean teamHasValidMoveOptions(TeamColor teamColor){
         for (int i = 0; i < 8; i++){// iterate over rows
             for (int j = 0; j < 8; j++){//iterate over columns
@@ -213,7 +190,6 @@ public class ChessGame {
         }
         return false;
     }
-
 
 
     /**
@@ -247,16 +223,12 @@ public class ChessGame {
         ChessPiece king = result.king;
         ChessPosition kingPosition = result.kingPosition;
         boolean currentlyInDanger = checkIfEnemyCanAttackHere(board, kingPosition, teamColor);
-        //Collection<ChessMove> safeKingMoves = getSafeKingMoves(king,kingPosition, teamColor);
-
         if (currentlyInDanger && !teamHasValidMoveOptions(teamColor)){
             return true;
         }
         else{
             return false;
         }
-
-
     }
 
     /**
