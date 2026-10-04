@@ -119,11 +119,24 @@ public class ChessGame {
 
     public Result getKingInfo(TeamColor teamColor){//returns the king piece and position for the check/checkmate/stalemate methods
         ChessPiece king = null;
-        ChessBoard board = getBoard();
         ChessPosition kingPosition = null;
         for (int i = 0; i < 8; i++){// iterate over rows
             for (int j = 0; j < 8; j++){//iterate over columns
                 ChessPiece pieceToCheck = board.getPiece(new ChessPosition(i+1,j+1));
+                if (pieceToCheck != null && pieceToCheck.getPieceType() == ChessPiece.PieceType.KING && pieceToCheck.getTeamColor() == teamColor){
+                    king = pieceToCheck;
+                    kingPosition = new ChessPosition(i+1,j+1);
+                }
+            }
+        }
+        return new Result(king, kingPosition);
+    }
+    public Result getKingInfo(ChessBoard boardToCheck, TeamColor teamColor){//returns the king piece and position for the check/checkmate/stalemate methods
+        ChessPiece king = null;
+        ChessPosition kingPosition = null;
+        for (int i = 0; i < 8; i++){// iterate over rows
+            for (int j = 0; j < 8; j++){//iterate over columns
+                ChessPiece pieceToCheck = boardToCheck.getPiece(new ChessPosition(i+1,j+1));
                 if (pieceToCheck != null && pieceToCheck.getPieceType() == ChessPiece.PieceType.KING && pieceToCheck.getTeamColor() == teamColor){
                     king = pieceToCheck;
                     kingPosition = new ChessPosition(i+1,j+1);
@@ -178,13 +191,13 @@ public class ChessGame {
                 ChessPiece pieceToCheck = board.getPiece(new ChessPosition(i+1,j+1));
                 if (pieceToCheck != null && pieceToCheck.getTeamColor() == teamColor){// if space has one of our pieces, see if it can make a move that doesn't result in check/checkmate, or resolves check/checkmate
                     Collection<ChessMove> friendlyValidMoves = validMoves(new ChessPosition(i+1,j+1));
-                    if (friendlyValidMoves.isEmpty()){
-                        return false;
+                    if (!friendlyValidMoves.isEmpty()){
+                        return true;
                     }
                 }
             }
         }
-        return true;
+        return false;
     }
 
 
@@ -196,14 +209,14 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        Result result = getKingInfo(teamColor);
+        Result result = getKingInfo(board, teamColor);
         ChessPiece king = result.king;
         ChessPosition kingPosition = result.kingPosition;
 
         return checkIfEnemyCanAttackHere(board, kingPosition, teamColor);
     }
     private boolean isInCheck(ChessBoard boardToCheck, TeamColor teamColor){
-        Result result = getKingInfo(teamColor);
+        Result result = getKingInfo(boardToCheck, teamColor);
         ChessPiece king = result.king;
         ChessPosition kingPosition = result.kingPosition;
         return checkIfEnemyCanAttackHere(boardToCheck, kingPosition, teamColor);
@@ -245,7 +258,7 @@ public class ChessGame {
         ChessPosition kingPosition = result.kingPosition;
         boolean currentlyInDanger = checkIfEnemyCanAttackHere(board, kingPosition, teamColor);
         //Collection<ChessMove> safeKingMoves = getSafeKingMoves(king,kingPosition, teamColor);
-        if (!currentlyInDanger && teamHasValidMoveOptions(teamColor)){
+        if (!currentlyInDanger && !teamHasValidMoveOptions(teamColor)){
             return true;
         }
         else{
