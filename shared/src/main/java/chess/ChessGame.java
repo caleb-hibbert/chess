@@ -120,7 +120,8 @@ public class ChessGame {
             //System.out.printf("The move %s was completed\n", move.toString());
         }
         else{
-            throw new InvalidMoveException("The move " + move.toString() + " wasn't in the list of valid moves. That list was: " + validMovesList.toString());
+            throw new InvalidMoveException("The move " + move.toString() +
+                    " wasn't in the list of valid moves. That list was: " + validMovesList.toString());
         }
 
     }
@@ -142,7 +143,8 @@ public class ChessGame {
         }
         return new Result(king, kingPosition);
     }
-    public Result getKingInfo(ChessBoard boardToCheck, TeamColor teamColor){//returns the king piece and position for the check/checkmate/stalemate methods
+    public Result getKingInfo(ChessBoard boardToCheck, TeamColor teamColor){
+        //returns the king piece and position for the check/checkmate/stalemate methods
         ChessPiece king = null;
         ChessPosition kingPosition = null;
         for (int i = 0; i < 8; i++){// iterate over rows
@@ -162,13 +164,16 @@ public class ChessGame {
         for (int i = 0; i < 8; i++){// iterate over rows
             for (int j = 0; j < 8; j++){//iterate over columns
                 ChessPiece pieceToCheck = boardToCheck.getPiece(new ChessPosition(i+1,j+1));
-                if (pieceToCheck != null && pieceToCheck.getTeamColor() != teamColor){// if space has enemy piece, get its moves and see if it can attack our king on the temp board
-                    Collection<ChessMove> enemyMoves = pieceToCheck.pieceMoves(boardToCheck, new ChessPosition(i+1,j+1));
-                    for (ChessMove move : enemyMoves){
-                        if (move.getEndPosition().equals(position)){
-                            return true; // enemy piece can attack this position
-                        }
+                if (pieceToCheck == null || pieceToCheck.getTeamColor() == teamColor){
+                    continue;
+                }
+                // if space has enemy piece, get its moves and see if it can attack our king on the temp board
+                Collection<ChessMove> enemyMoves = pieceToCheck.pieceMoves(boardToCheck, new ChessPosition(i+1,j+1));
+                for (ChessMove move : enemyMoves){
+                    if (move.getEndPosition().equals(position)){
+                        return true; // enemy piece can attack this position
                     }
+
                 }
             }
         }
@@ -180,7 +185,8 @@ public class ChessGame {
         for (int i = 0; i < 8; i++){// iterate over rows
             for (int j = 0; j < 8; j++){//iterate over columns
                 ChessPiece pieceToCheck = board.getPiece(new ChessPosition(i+1,j+1));
-                if (pieceToCheck != null && pieceToCheck.getTeamColor() == teamColor){// if space has one of our pieces, see if it can make a move that doesn't result in check/checkmate, or resolves check/checkmate
+                if (pieceToCheck != null && pieceToCheck.getTeamColor() == teamColor){
+                    // if space has one of our pieces, see if it can make a move that doesn't result in check/checkmate, or resolves check/checkmate
                     Collection<ChessMove> friendlyValidMoves = validMoves(new ChessPosition(i+1,j+1));
                     if (!friendlyValidMoves.isEmpty()){
                         return true;
