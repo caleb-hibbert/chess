@@ -104,7 +104,21 @@ public class ChessGame {
         if (validMovesList.contains(move)){
             board.removePiece(move.getStartPosition());
             board.removePiece(move.getEndPosition());
-            board.addPiece(move.getEndPosition(), piece);
+            if (move.getPromotionPiece() == ChessPiece.PieceType.ROOK){
+                board.addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), ChessPiece.PieceType.ROOK));
+            }
+            else if (move.getPromotionPiece() == ChessPiece.PieceType.KNIGHT){
+                board.addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), ChessPiece.PieceType.KNIGHT));
+            }
+            else if (move.getPromotionPiece() == ChessPiece.PieceType.BISHOP){
+                board.addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), ChessPiece.PieceType.BISHOP));
+            }
+            else if (move.getPromotionPiece() == ChessPiece.PieceType.QUEEN){
+                board.addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), ChessPiece.PieceType.QUEEN));
+            }
+            else{
+                board.addPiece(move.getEndPosition(), piece);
+            }
             changeTeamTurn();
             //System.out.printf("The move %s was completed\n", move.toString());
         }
