@@ -29,6 +29,7 @@ public class Server {
         javalin.post("/session", this::login);
         javalin.delete("/session", this::logout);
         javalin.delete("/db", this::clear);
+        //TODO - make sure game creation logic is good, implement HTTP catch, handler, etc.
 
 
     }
@@ -107,7 +108,7 @@ public class Server {
         Gson gson = new Gson();
         try{
             userService.clear();
-            
+
 
             ctx.status(200);
             ctx.contentType("application/json");

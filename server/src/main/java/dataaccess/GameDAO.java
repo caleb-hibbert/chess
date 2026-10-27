@@ -2,24 +2,15 @@ package dataaccess;
 import model.GameData;
 import model.UserData;
 
-public class GameDAO {
+public interface GameDAO {
 
-    void createGame() throws DataAccessException{
+    int createGame(String gameName) throws DataAccessException;
 
-    }
+    void getGame(int gameID) throws DataAccessException;
 
-    void getGame(int gameID) throws DataAccessException{
+    void listGames() throws DataAccessException;
 
-    }
-
-    void listGames() throws DataAccessException{
-
-    }
-
-    void updateGame(/*gameIDAndUsernameAndColor*/) throws DataAccessException{//how to represent "gameIDAndUsernameAndColor"
-
-    }
-
+    void updateGame(/*gameIDAndUsernameAndColor*/) throws DataAccessException;//how to represent "gameIDAndUsernameAndColor"
 
 
 }
