@@ -26,10 +26,10 @@ public class Server {
 
 
         javalin.post("/user", this::register);
+        javalin.post("/session", this::login);
+        javalin.delete("/session", this::logout);
+        javalin.delete("/db", this::clear);
 
-
-        javalin.delete("/db", Server::clearDb);// stub that will eventually handle database clear calls
-        // ^ the Server::clearDb just means this is still a lambda function, it's using clearDb below, split up for clarity to avoid a huge line/lambda function
 
     }
 
@@ -55,22 +55,73 @@ public class Server {
 
         }
     }
-    private void register(Context ctx) throws DataAccessException {
+    private void login(Context ctx) throws DataAccessException {
+        Gson gson = new Gson();
+        try{
+            LoginRequest request = gson.fromJson(ctx.body(), LoginRequest.class);
+            LoginResult result = userService.login(request);
+
+            ctx.status(200);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(result));
+        }
+        catch (InvalidRequestException e){
+            ctx.status(400);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+        }
+        catch (UnauthorizedException e){
+            ctx.status(401);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+        }
+
+    }
+
+    private void logout(Context ctx) throws DataAccessException {
         Gson gson = new Gson();
         try{
 
+            String authToken = ctx.header("authorization");
+            LogoutRequest request = new LogoutRequest(authToken);
+            userService.logout(request);
 
-            
+
+            ctx.status(200);
+            ctx.contentType("application/json");
         }
+        catch (InvalidRequestException e){
+            ctx.status(400);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+        }
+        catch (UnauthorizedException e){
+            ctx.status(401);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+        }
+
     }
 
-    private static void clearDb(Context ctx){
-        var r = Map.of();
-        var json = new Gson();
-        ctx.json(json.toJson(r));
+    private void clear(Context ctx) throws DataAccessException {
+        Gson gson = new Gson();
+        try{
+            userService.clear();
+            
+
+            ctx.status(200);
+            ctx.contentType("application/json");
+        }
+        catch(DataAccessException e){
+            ctx.status(500);
+        }
+
     }
 
-    public int run(int desiredPort) {
+
+
+
+        public int run(int desiredPort) {
         javalin.start(desiredPort);
         return javalin.port();
     }
