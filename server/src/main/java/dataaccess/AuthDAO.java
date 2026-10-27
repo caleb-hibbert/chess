@@ -3,7 +3,7 @@ import model.AuthData;
 
 public class AuthDAO {
 
-    void createAuth(AuthData authData) throws DataAccessException{
+    public void createAuth(AuthData authData) throws DataAccessException{
 
     }
 
