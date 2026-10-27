@@ -24,7 +24,7 @@ public class UserService {
                 registerRequest.username() == null || registerRequest.username().isBlank() ||
                 registerRequest.email() == null || registerRequest.email().isBlank() ||
                 registerRequest.password() == null || registerRequest.password().isBlank()){
-            throw new DataAccessException("The email, username, or password submitted was empty");//TODO - change to different exception type later
+            throw new InvalidRequestException("Error: bad request");//
         }
     }
 
@@ -34,7 +34,7 @@ public class UserService {
 
         UserData userData = userDAO.getUser(registerRequest.username());
         if (userData != null){
-            throw new DataAccessException("The requested username is already is use");//TODO - change to different exception type later
+            throw new AlreadyTakenException("Error: already taken");//
         }
 
         //if not in use, create user + add to db

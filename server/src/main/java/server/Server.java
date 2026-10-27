@@ -7,9 +7,7 @@ import io.javalin.http.Context;
 import java.util.Map;
 import java.util.HashMap;
 
-import service.RegisterRequest;
-import service.RegisterResult;
-import service.UserService;
+import service.*;
 
 public class Server {
     private final Javalin javalin;
@@ -37,12 +35,33 @@ public class Server {
 
     private void register(Context ctx) throws DataAccessException {
         Gson gson = new Gson();
+        try{
         RegisterRequest request = gson.fromJson(ctx.body(), RegisterRequest.class);
         RegisterResult result = userService.register(request);
 
         ctx.status(200);
         ctx.contentType("application/json");
         ctx.result(gson.toJson(result));
+        }
+        catch (InvalidRequestException e){
+            ctx.status(400);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+        }
+        catch (AlreadyTakenException e){
+            ctx.status(403);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+
+        }
+    }
+    private void register(Context ctx) throws DataAccessException {
+        Gson gson = new Gson();
+        try{
+
+
+            
+        }
     }
 
     private static void clearDb(Context ctx){
