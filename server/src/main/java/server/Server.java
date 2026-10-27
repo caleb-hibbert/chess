@@ -1,24 +1,48 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.*;
 import io.javalin.*;
 import io.javalin.http.Context;
-
 import java.util.Map;
+import java.util.HashMap;
+
+import service.RegisterRequest;
+import service.RegisterResult;
+import service.UserService;
 
 public class Server {
-
     private final Javalin javalin;
 
+    private final UserDAO userDAO;
+    private final AuthDAO authDAO;
+    private final UserService userService;
+
     public Server() {
+        userDAO = new MemoryUserDAO();
+        authDAO = new MemoryAuthDAO();
+        userService = new UserService(userDAO, authDAO);
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
         // Register your endpoints and exception handlers here.
 
 
+        javalin.post("/user", this::register);
+
+
         javalin.delete("/db", Server::clearDb);// stub that will eventually handle database clear calls
         // ^ the Server::clearDb just means this is still a lambda function, it's using clearDb below, split up for clarity to avoid a huge line/lambda function
 
+    }
+
+    private void register(Context ctx) throws DataAccessException {
+        Gson gson = new Gson();
+        RegisterRequest request = gson.fromJson(ctx.body(), RegisterRequest.class);
+        RegisterResult result = userService.register(request);
+
+        ctx.status(200);
+        ctx.contentType("application/json");
+        ctx.result(gson.toJson(result));
     }
 
     private static void clearDb(Context ctx){

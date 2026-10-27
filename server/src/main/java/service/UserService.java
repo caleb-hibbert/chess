@@ -8,6 +8,7 @@ import model.AuthData;
 import java.util.UUID;
 
 
+
 public class UserService {
     private final UserDAO userDAO;
     private final AuthDAO authDAO;
@@ -40,13 +41,10 @@ public class UserService {
         userDAO.createUser(new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email()));
         String authToken = generateToken();
         AuthData authData = new AuthData(authToken, registerRequest.username());
-        authDAO.createAuth(authData);
-        //generate authToken, associate w/ this user
-        //return RegisterResult containing username and auth token
+        authDAO.createAuth(authData);// generate authToken, associate w/ this user
+
         return new RegisterResult(registerRequest.username(),authToken);
-
-
-
+        //return RegisterResult containing username and auth token
     }
 //    public LoginResult login(LoginRequest loginRequest) {
 //
