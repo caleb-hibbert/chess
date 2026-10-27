@@ -34,7 +34,7 @@ public class Server {
         javalin.delete("/session", this::logout);
         javalin.delete("/db", this::clear);
         javalin.post("/game", this::createGame);
-        //TODO - make sure game creation logic is good, implement HTTP catch, handler, etc.
+        javalin.get("/game", this::getGames);
 
 
     }
@@ -152,6 +152,16 @@ public class Server {
         }
 
     }
+
+    private void getGames(Context ctx) throws DataAccessException {
+        Gson gson = new Gson();
+        try{
+            String authToken = ctx.header("authorization");
+            GetGamesRequest request = new GetGamesRequest(authToken);
+            gameService.getGames(request);//TODO - finish
+        }
+    }
+
 
 
         public int run(int desiredPort) {

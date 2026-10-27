@@ -9,7 +9,7 @@ import model.AuthData;
 import model.GameData;
 
 
-public class GameService {
+public class  GameService {
     private final GameDAO gameDAO;
     private final AuthDAO authDAO;
 
@@ -45,13 +45,14 @@ public class GameService {
 
     }
 
+    public void getGames(GetGamesRequest getGamesRequest){
+        //TODO - finish
+    }
 
 //    public void joinGame(){
 //
 //    }
-//    public void listGames(){
-//
-//    }
+
     public void clear() throws DataAccessException{
         gameDAO.clear();
     }

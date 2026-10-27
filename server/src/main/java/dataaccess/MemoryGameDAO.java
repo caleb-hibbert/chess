@@ -2,19 +2,19 @@ package dataaccess;
 
 import chess.ChessGame;
 import model.GameData;
-import model.UserData;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MemoryGameDAO implements GameDAO {
     private final Map<Integer, GameData> games = new HashMap<>();
-    private int nextGameID = 0;
+    private int GameID = 0;
 
     public int createGame(String gameName) throws DataAccessException {
-        nextGameID += 1;
-        GameData gamedata = new GameData(nextGameID, null, null, gameName, new ChessGame());
-        return nextGameID;
+        GameID += 1;
+        GameData gamedata = new GameData(GameID, null, null, gameName, new ChessGame());
+        games.put(GameID, gamedata);
+        return GameID;
     }
 
     public void getGame(int gameID) throws DataAccessException {
