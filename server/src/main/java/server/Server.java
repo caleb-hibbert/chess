@@ -14,12 +14,16 @@ public class Server {
 
     private final UserDAO userDAO;
     private final AuthDAO authDAO;
+    private final GameDAO gameDAO;
     private final UserService userService;
+    private final GameService gameService;
 
     public Server() {
         userDAO = new MemoryUserDAO();
         authDAO = new MemoryAuthDAO();
+        gameDAO = new MemoryGameDAO();
         userService = new UserService(userDAO, authDAO);
+        gameService = new GameService(gameDAO, authDAO);
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
         // Register your endpoints and exception handlers here.
@@ -29,6 +33,7 @@ public class Server {
         javalin.post("/session", this::login);
         javalin.delete("/session", this::logout);
         javalin.delete("/db", this::clear);
+        javalin.post("/game", this::createGame);
         //TODO - make sure game creation logic is good, implement HTTP catch, handler, etc.
 
 
@@ -119,7 +124,33 @@ public class Server {
 
     }
 
+    public void createGame(Context ctx) throws DataAccessException{
+        Gson gson = new Gson();
+        try{
+            String authToken = ctx.header("authorization");
+            CreateGameRequest body = gson.fromJson(ctx.body(), CreateGameRequest.class);
+            CreateGameRequest request = new CreateGameRequest(body.gameName(), authToken);
 
+            CreateGameResult result = gameService.createGame(request);
+
+            ctx.status(200);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(result));
+
+
+        }
+        catch (InvalidRequestException e){
+            ctx.status(400);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+        }
+        catch (UnauthorizedException e){
+            ctx.status(401);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+        }
+
+    }
 
 
         public int run(int desiredPort) {
