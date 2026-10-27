@@ -113,6 +113,7 @@ public class Server {
         Gson gson = new Gson();
         try{
             userService.clear();
+            gameService.clear();
 
 
             ctx.status(200);

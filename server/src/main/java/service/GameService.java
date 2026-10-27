@@ -52,6 +52,7 @@ public class GameService {
 //    public void listGames(){
 //
 //    }
-
-
+    public void clear() throws DataAccessException{
+        gameDAO.clear();
     }
+}
