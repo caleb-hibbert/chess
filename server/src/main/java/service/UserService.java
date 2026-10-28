@@ -18,6 +18,15 @@ public class UserService {
         this.authDAO = authDAO;
     }
 
+    private void checkAuthData(String authToken) throws InvalidRequestException, UnauthorizedException, DataAccessException{
+        if (authToken == null || authToken.isBlank()){
+            throw new InvalidRequestException("Error: bad request");
+
+        }
+        if (authDAO.getAuth(authToken) == null){
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+    }
 
     private void checkRegisterRequestData(RegisterRequest registerRequest) throws InvalidRequestException{
         if (registerRequest == null ||
@@ -29,7 +38,7 @@ public class UserService {
     }
 
 
-        public RegisterResult register(RegisterRequest registerRequest) throws InvalidRequestException, DataAccessException, AlreadyTakenException{
+    public RegisterResult register(RegisterRequest registerRequest) throws InvalidRequestException, DataAccessException, AlreadyTakenException{
         checkRegisterRequestData(registerRequest);
 
 
@@ -74,32 +83,11 @@ public class UserService {
         }
     }
 
-//    private void checkLogoutRequestData(LogoutRequest logoutRequest){
-//        if (logoutRequest.authToken() == null ||
-//                logoutRequest.authToken().isBlank()){
-//            throw new InvalidRequestException("Error: bad request");
-//        }
-//    }
-    private void checkAuthData(String authToken) throws InvalidRequestException, UnauthorizedException, DataAccessException{
-        if (authToken == null || authToken.isBlank()){
-            throw new InvalidRequestException("Error: bad request");
-
-        }
-        if (authDAO.getAuth(authToken) == null){
-            throw new UnauthorizedException("Error: unauthorized");
-        }
-    }
 
     public void logout(LogoutRequest logoutRequest) throws InvalidRequestException, UnauthorizedException, DataAccessException{
         checkAuthData(logoutRequest.authToken());
-//        checkLogoutRequestData(logoutRequest);
-//
-//        AuthData authData = authDAO.getAuth(logoutRequest.authToken());
-//        if (authData == null){
-//            throw new UnauthorizedException("Error: unauthorized");
-//        }
-        authDAO.deleteAuth(logoutRequest.authToken());
 
+        authDAO.deleteAuth(logoutRequest.authToken());
     }
 
     public void clear() throws DataAccessException{

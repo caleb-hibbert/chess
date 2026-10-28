@@ -35,6 +35,7 @@ public class Server {
         javalin.delete("/db", this::clear);
         javalin.post("/game", this::createGame);
         javalin.get("/game", this::getGames);
+        javalin.put("/game", this::joinGame);
 
 
     }
@@ -162,7 +163,6 @@ public class Server {
 
             ctx.status(200);
             ctx.contentType("application/json");
-            //ctx.result(gson.toJson(Map.of("games", result)));
             ctx.result(gson.toJson(result));
         }
         catch (InvalidRequestException e){
@@ -176,6 +176,31 @@ public class Server {
             ctx.result(gson.toJson(Map.of("message", e.getMessage())));
         }
     }
+
+    private void joinGame(Context ctx) throws DataAccessException {
+        Gson gson = new Gson();
+        try{
+            String authToken = ctx.header("authorization"); // - do we need to grab authorization from the header, or will body get it?
+            JoinGameRequest body = gson.fromJson(ctx.body(), JoinGameRequest.class);
+            JoinGameRequest request = new JoinGameRequest(authToken, body.playerColor(), body.gameID());
+            gameService.joinGame(request);
+
+
+            ctx.status(200);
+            ctx.contentType("application/json");
+        }
+        catch (InvalidRequestException e){
+            ctx.status(400);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+        }
+        catch (UnauthorizedException e){
+            ctx.status(401);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+        }
+    }
+
 
 
 

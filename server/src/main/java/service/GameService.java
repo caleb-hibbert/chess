@@ -10,6 +10,7 @@ import model.AuthData;
 import model.GameData;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -56,9 +57,51 @@ public class  GameService {
         return new GetGamesResult(gameList);
     }
 
-//    public void joinGame(){
-//
-//    }
+    private void checkJoinGameRequestData(JoinGameRequest joinGameRequest) throws InvalidRequestException{
+//        ArrayList<String> fds = new ArrayList<>(List.of("WHITE", "BLACK"));
+//        if (!fds.contains(joinGameRequest.playerColor())){
+//        }
+
+        if (joinGameRequest == null ||
+                joinGameRequest.playerColor() == null || joinGameRequest.playerColor().isBlank() ||
+                (!"WHITE".equals(joinGameRequest.playerColor()) && !"BLACK".equals(joinGameRequest.playerColor())) ||
+                joinGameRequest.gameID() <= 0){
+            throw new InvalidRequestException("Error: bad request");
+        }
+
+
+    }
+
+    public void joinGame(JoinGameRequest joinGameRequest) throws InvalidRequestException, DataAccessException, AlreadyTakenException{
+        checkAuthData(joinGameRequest.authToken());
+        checkJoinGameRequestData(joinGameRequest);
+
+        GameData gameData = gameDAO.getGame(joinGameRequest.gameID());
+        if (gameData == null){
+            throw new InvalidRequestException("Error: bad request");
+        }
+
+        GameData updatedGame;
+        String authToken = joinGameRequest.authToken();
+        AuthData data = authDAO.getAuth(authToken);
+        String username = data.username();
+
+        if (joinGameRequest.playerColor().equals("WHITE")){
+            if (gameData.whiteUsername() != null){
+                throw new AlreadyTakenException("Error: already taken");
+            }
+            updatedGame = new GameData(gameData.gameID(),username, gameData.blackUsername(), gameData.gameName(), gameData.game());
+        }
+        else {
+            if (joinGameRequest.playerColor().equals("BLACK") && gameData.blackUsername() != null){
+                // ^ having the BLACK check here and using if-else rather than 2 IF's stops IDE from complaining about updateGame not being initialized
+                throw new AlreadyTakenException("Error: already taken");
+            }
+            updatedGame = new GameData(gameData.gameID(), gameData.whiteUsername(), username, gameData.gameName(), gameData.game());
+        }
+
+        gameDAO.updateGame(updatedGame);
+    }
 
     public void clear() throws DataAccessException{
         gameDAO.clear();

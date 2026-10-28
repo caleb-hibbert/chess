@@ -17,18 +17,18 @@ public class MemoryGameDAO implements GameDAO {
         return GameID;
     }
 
-    public void getGame(int gameID) throws DataAccessException {
-
+    public GameData getGame(int gameID) throws DataAccessException {
+        return games.get(gameID);
     }
 
     public Map<Integer, GameData> listGames() throws DataAccessException {
         return games;
     }
 
-    public void updateGame(/*gameIDAndUsernameAndColor*/) throws DataAccessException {//how to represent "gameIDAndUsernameAndColor"?
-
-
+    public void updateGame(GameData updatedGame) throws DataAccessException {//how to represent "gameIDAndUsernameAndColor"?
+        games.put(updatedGame.gameID(), updatedGame);
     }
+
 
     public void clear() throws DataAccessException{
         games.clear();

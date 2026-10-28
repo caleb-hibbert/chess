@@ -8,11 +8,11 @@ public interface GameDAO {
 
     int createGame(String gameName) throws DataAccessException;
 
-    void getGame(int gameID) throws DataAccessException;
+    GameData getGame(int gameID) throws DataAccessException;
 
     Map<Integer, GameData> listGames() throws DataAccessException;
 
-    void updateGame(/*gameIDAndUsernameAndColor*/) throws DataAccessException;//how to represent "gameIDAndUsernameAndColor"
+    void updateGame(GameData updatedGame) throws DataAccessException;//how to represent "gameIDAndUsernameAndColor"
 
     void clear() throws DataAccessException;
 
