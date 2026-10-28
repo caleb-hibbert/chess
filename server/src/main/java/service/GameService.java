@@ -19,7 +19,7 @@ public class  GameService {
     }
 
 
-    private void checkAuthData(String authToken) throws InvalidRequestException, UnauthorizedException, DataAccessException{// this was copied from UserService, may need to break out into a separate class
+    private void checkAuthData(String authToken) throws InvalidRequestException, UnauthorizedException, DataAccessException{
         if (authToken == null || authToken.isBlank()){
             throw new InvalidRequestException("Error: bad request");
 
@@ -86,7 +86,8 @@ public class  GameService {
         }
         else {
             if (joinGameRequest.playerColor().equals("BLACK") && gameData.blackUsername() != null){
-                // ^ having the BLACK check here and using if-else rather than 2 IF's stops IDE from complaining about updateGame not being initialized
+                // ^ having the BLACK check here and using if-else rather than 2 IF's stops IDE from...
+                // ...complaining about updateGame not being initialized
                 throw new AlreadyTakenException("Error: already taken");
             }
             updatedGame = new GameData(gameData.gameID(), gameData.whiteUsername(), username, gameData.gameName(), gameData.game());

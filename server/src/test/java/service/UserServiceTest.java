@@ -52,10 +52,6 @@ public class UserServiceTest {
 
     @Test
     void registerEmptyInfo() throws InvalidRequestException, AlreadyTakenException{
-//        assertThrows(InvalidRequestException.class, () -> {
-//            RegisterRequest request = new RegisterRequest("", "", "");
-//
-//        })
         assertAll(() -> assertThrows(InvalidRequestException.class, () -> {
             RegisterRequest request = new RegisterRequest("", "mypassword", "caleb@byu.edu");
             userService.register(request);
@@ -138,16 +134,4 @@ public class UserServiceTest {
 
         assertNull(userDAO.getUser("caleb"));
     }
-
-
-//    @Test
-//    void tokenGenerationUnique() throws DataAccessException{
-//        RegisterRequest registerRequest = new RegisterRequest("caleb", "mypassword", "caleb@byu.edu");
-//        RegisterResult registerResult = userService.register(registerRequest);
-//
-//        assertNotEquals(registerResult.authToken(), userService.generateToken());
-//    }
-
-
-
 }

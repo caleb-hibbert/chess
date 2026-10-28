@@ -175,18 +175,4 @@ public class GameServiceTest {
 
         assertNull(gameDAO.getGame(1));
     }
-
-//        RegisterRequest request = new RegisterRequest("caleb", "mypassword", "caleb@byu.edu");
-//        RegisterResult result = userService.register(request);
-//        assertEquals("caleb", result.username());
-//        assertNotNull(result.authToken());
-//
-//        UserData testUser = userDAO.getUser(request.username());
-//        assertEquals("caleb", testUser.username());
-//        assertEquals("mypassword", testUser.password());
-//        assertEquals("caleb@byu.edu", testUser.email());
-//        AuthData testUserAuthData = authDAO.getAuth(result.authToken());
-//        assertEquals("caleb", testUserAuthData.username());
-
-
 }

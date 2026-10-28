@@ -8,13 +8,13 @@ import java.util.Map;
 
 public class MemoryGameDAO implements GameDAO {
     private final Map<Integer, GameData> games = new HashMap<>();
-    private int GameID = 0;
+    private int gameID = 0;
 
     public int createGame(String gameName) throws DataAccessException {
-        GameID += 1;
-        GameData gamedata = new GameData(GameID, null, null, gameName, new ChessGame());
-        games.put(GameID, gamedata);
-        return GameID;
+        gameID += 1;
+        GameData gamedata = new GameData(gameID, null, null, gameName, new ChessGame());
+        games.put(gameID, gamedata);
+        return gameID;
     }
 
     public GameData getGame(int gameID) throws DataAccessException {

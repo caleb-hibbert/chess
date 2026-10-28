@@ -139,16 +139,17 @@ public class Server {
             ctx.contentType("application/json");
             ctx.result(gson.toJson(result));
         }
-        catch (InvalidRequestException e){
-            ctx.status(400);
-            ctx.contentType("application/json");
-            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
-        }
         catch (UnauthorizedException e){
             ctx.status(401);
             ctx.contentType("application/json");
             ctx.result(gson.toJson(Map.of("message", e.getMessage())));
         }
+        catch (InvalidRequestException e){
+            ctx.status(400);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+        }
+
     }
 
 
