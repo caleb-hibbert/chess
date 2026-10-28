@@ -24,7 +24,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void registerTest() throws DataAccessException{
+    void registerSuccessTest() throws DataAccessException{
         RegisterRequest request = new RegisterRequest("caleb", "mypassword", "caleb@byu.edu");
         RegisterResult result = userService.register(request);
         assertEquals("caleb", result.username());
@@ -50,22 +50,32 @@ public class UserServiceTest {
     }
 
     @Test
-    void registerEmptyInfo() throws InvalidRequestException, DataAccessException, AlreadyTakenException{
-        assertThrows(InvalidRequestException.class, () -> {
-            RegisterRequest request = new RegisterRequest("", "", "");
-            
-        })
+    void registerEmptyInfo() throws InvalidRequestException, AlreadyTakenException{
+//        assertThrows(InvalidRequestException.class, () -> {
+//            RegisterRequest request = new RegisterRequest("", "", "");
+//
+//        })
+        assertAll(() -> assertThrows(InvalidRequestException.class, () -> {
+            RegisterRequest request = new RegisterRequest("", "mypassword", "caleb@byu.edu");
+            userService.register(request);
+            }),
+            () -> assertThrows(InvalidRequestException.class, () -> {
+                RegisterRequest request = new RegisterRequest("caleb", "", "caleb@byu.edu");
+                userService.register(request);
+            }),
+            () -> assertThrows(InvalidRequestException.class, () ->{
+                RegisterRequest request = new RegisterRequest("caleb", "mypassword", "");
+                userService.register(request);
+            })
+        );
     }
 
-//    @Test
-//    public void simpleAssertionTest() {
-//        assertEquals(200, 100 + 100);
-//        assertTrue(100 == 2 * 50);
-//        assertNotNull(new Object(), "Response did not return authentication String");
-//        assertThrows(InvalidArgumentException.class, () -> {
-//            throw new InvalidArgumentException();
-//        });
-//    }
+    @Test
+    void loginSuccessTest() throws InvalidRequestException, AlreadyTakenException, DataAccessException{
+        RegisterRequest registerRequest = new RegisterRequest("caleb", "mypassword", "caleb@byu.edu");
+        RegisterResult registerResult = userService.register(registerRequest);
 
+        LoginRequest loginRequest = new LoginRequest("caleb", "mypassword");
+    }
 
 }
