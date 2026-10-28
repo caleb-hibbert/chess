@@ -76,6 +76,55 @@ public class UserServiceTest {
         RegisterResult registerResult = userService.register(registerRequest);
 
         LoginRequest loginRequest = new LoginRequest("caleb", "mypassword");
+        LoginResult loginResult = userService.login(loginRequest);
+        assertEquals("caleb", loginResult.username());
+
+        UserData testUser = userDAO.getUser(loginRequest.username());
+        assertEquals(loginRequest.password(), testUser.password());
     }
 
+    @Test
+    void loginBadPassword() throws UnauthorizedException, DataAccessException{
+        RegisterRequest registerRequest = new RegisterRequest("caleb", "mypassword", "caleb@byu.edu");
+        RegisterResult registerResult = userService.register(registerRequest);
+
+        assertThrows(UnauthorizedException.class, () -> {
+            LoginRequest loginRequest = new LoginRequest("caleb", "badpassword");
+            LoginResult loginResult = userService.login(loginRequest);
+        });
+        assertThrows(InvalidRequestException.class, () -> {
+            LoginRequest loginRequest = new LoginRequest("caleb", "");
+            LoginResult loginResult = userService.login(loginRequest);
+        });
+    }
+
+
+    @Test
+    void logoutSuccess() throws UnauthorizedException, DataAccessException{
+        RegisterRequest registerRequest = new RegisterRequest("caleb", "mypassword", "caleb@byu.edu");
+        RegisterResult registerResult = userService.register(registerRequest);
+
+        assertThrows(UnauthorizedException.class, () -> {
+            LogoutRequest logoutRequest = new LogoutRequest(registerResult.authToken());
+            userService.logout(logoutRequest);
+            userService.logout(logoutRequest);
+        });
+
+        AuthData authData = authDAO.getAuth(registerResult.authToken());
+        assertNull(authDAO.getAuth(registerResult.authToken()));
+    }
+
+
+    @Test
+    void clearSuccess() throws DataAccessException{
+        RegisterRequest registerRequest = new RegisterRequest("caleb", "mypassword", "caleb@byu.edu");
+        RegisterResult registerResult = userService.register(registerRequest);
+
+        userService.clear();
+
+        assertNull(userDAO.getUser("caleb"));
+
+
+
+    }
 }
