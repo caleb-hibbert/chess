@@ -51,14 +51,10 @@ public class Server {
         ctx.result(gson.toJson(result));
         }
         catch (InvalidRequestException e){
-            ctx.status(400);
-            ctx.contentType("application/json");
-            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+            sendErrorToClient(ctx, 400, e.getMessage());
         }
         catch (AlreadyTakenException e){
-            ctx.status(403);
-            ctx.contentType("application/json");
-            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+            sendErrorToClient(ctx, 403, e.getMessage());
 
         }
     }
@@ -75,14 +71,10 @@ public class Server {
             ctx.result(gson.toJson(result));
         }
         catch (InvalidRequestException e){
-            ctx.status(400);
-            ctx.contentType("application/json");
-            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+            sendErrorToClient(ctx, 400, e.getMessage());
         }
         catch (UnauthorizedException e){
-            ctx.status(401);
-            ctx.contentType("application/json");
-            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+            sendErrorToClient(ctx, 401, e.getMessage());
         }
     }
 
@@ -98,14 +90,10 @@ public class Server {
             ctx.contentType("application/json");
         }
         catch (InvalidRequestException e){
-            ctx.status(400);
-            ctx.contentType("application/json");
-            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+            sendErrorToClient(ctx, 400, e.getMessage());
         }
         catch (UnauthorizedException e){
-            ctx.status(401);
-            ctx.contentType("application/json");
-            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+            sendErrorToClient(ctx, 401, e.getMessage());
         }
     }
 
@@ -140,14 +128,10 @@ public class Server {
             ctx.result(gson.toJson(result));
         }
         catch (UnauthorizedException e){
-            ctx.status(401);
-            ctx.contentType("application/json");
-            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+            sendErrorToClient(ctx, 401, e.getMessage());
         }
         catch (InvalidRequestException e){
-            ctx.status(400);
-            ctx.contentType("application/json");
-            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+            sendErrorToClient(ctx, 400, e.getMessage());
         }
 
     }
@@ -165,14 +149,10 @@ public class Server {
             ctx.result(gson.toJson(result));
         }
         catch (InvalidRequestException e){
-            ctx.status(400);
-            ctx.contentType("application/json");
-            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+            sendErrorToClient(ctx, 400, e.getMessage());
         }
         catch (UnauthorizedException e){
-            ctx.status(401);
-            ctx.contentType("application/json");
-            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+            sendErrorToClient(ctx, 401, e.getMessage());
         }
     }
 
@@ -190,20 +170,22 @@ public class Server {
             ctx.contentType("application/json");
         }
         catch (InvalidRequestException e){
-            ctx.status(400);
-            ctx.contentType("application/json");
-            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+            sendErrorToClient(ctx, 400, e.getMessage());
         }
         catch (UnauthorizedException e){
-            ctx.status(401);
-            ctx.contentType("application/json");
-            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+            sendErrorToClient(ctx, 401, e.getMessage());
         }
         catch (AlreadyTakenException e){
-            ctx.status(403);
-            ctx.contentType("application/json");
-            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+            sendErrorToClient(ctx, 403, e.getMessage());
         }
+    }
+
+
+    private void sendErrorToClient(Context ctx, int returnCode, String message){
+        Gson gson = new Gson();
+        ctx.status(returnCode);
+        ctx.contentType("application/json");
+        ctx.result(gson.toJson(Map.of("message", message)));
     }
 
 
