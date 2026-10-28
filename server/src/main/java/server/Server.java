@@ -199,6 +199,12 @@ public class Server {
             ctx.contentType("application/json");
             ctx.result(gson.toJson(Map.of("message", e.getMessage())));
         }
+        catch (AlreadyTakenException e){
+            ctx.status(403);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+
+        }
     }
 
 
