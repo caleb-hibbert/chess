@@ -15,5 +15,4 @@ public interface GameDAO {
     void updateGame(GameData updatedGame) throws DataAccessException;//how to represent "gameIDAndUsernameAndColor"
 
     void clear() throws DataAccessException;
-
 }

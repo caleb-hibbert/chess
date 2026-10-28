@@ -62,6 +62,8 @@ public class Server {
 
         }
     }
+
+
     private void login(Context ctx) throws DataAccessException {
         Gson gson = new Gson();
         try{
@@ -82,17 +84,15 @@ public class Server {
             ctx.contentType("application/json");
             ctx.result(gson.toJson(Map.of("message", e.getMessage())));
         }
-
     }
+
 
     private void logout(Context ctx) throws DataAccessException {
         Gson gson = new Gson();
         try{
-
             String authToken = ctx.header("authorization");
             LogoutRequest request = new LogoutRequest(authToken);
             userService.logout(request);
-
 
             ctx.status(200);
             ctx.contentType("application/json");
@@ -107,8 +107,8 @@ public class Server {
             ctx.contentType("application/json");
             ctx.result(gson.toJson(Map.of("message", e.getMessage())));
         }
-
     }
+
 
     private void clear(Context ctx) throws DataAccessException {
         Gson gson = new Gson();
@@ -116,15 +116,16 @@ public class Server {
             userService.clear();
             gameService.clear();
 
-
             ctx.status(200);
             ctx.contentType("application/json");
         }
         catch(DataAccessException e){
             ctx.status(500);
+            ctx.contentType("application/json");
         }
 
     }
+
 
     public void createGame(Context ctx) throws DataAccessException{
         Gson gson = new Gson();
@@ -132,14 +133,11 @@ public class Server {
             String authToken = ctx.header("authorization");
             CreateGameRequest body = gson.fromJson(ctx.body(), CreateGameRequest.class);
             CreateGameRequest request = new CreateGameRequest(body.gameName(), authToken);
-
             CreateGameResult result = gameService.createGame(request);
 
             ctx.status(200);
             ctx.contentType("application/json");
             ctx.result(gson.toJson(result));
-
-
         }
         catch (InvalidRequestException e){
             ctx.status(400);
@@ -151,8 +149,8 @@ public class Server {
             ctx.contentType("application/json");
             ctx.result(gson.toJson(Map.of("message", e.getMessage())));
         }
-
     }
+
 
     private void getGames(Context ctx) throws DataAccessException {
         Gson gson = new Gson();
@@ -177,10 +175,11 @@ public class Server {
         }
     }
 
+
     private void joinGame(Context ctx) throws DataAccessException {
         Gson gson = new Gson();
         try{
-            String authToken = ctx.header("authorization"); // - do we need to grab authorization from the header, or will body get it?
+            String authToken = ctx.header("authorization");
             JoinGameRequest body = gson.fromJson(ctx.body(), JoinGameRequest.class);
             JoinGameRequest request = new JoinGameRequest(authToken, body.playerColor(), body.gameID());
             gameService.joinGame(request);
@@ -203,11 +202,8 @@ public class Server {
             ctx.status(403);
             ctx.contentType("application/json");
             ctx.result(gson.toJson(Map.of("message", e.getMessage())));
-
         }
     }
-
-
 
 
         public int run(int desiredPort) {

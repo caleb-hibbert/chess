@@ -29,10 +29,7 @@ public class MemoryGameDAO implements GameDAO {
         games.put(updatedGame.gameID(), updatedGame);
     }
 
-
     public void clear() throws DataAccessException{
         games.clear();
     }
-
-
 }

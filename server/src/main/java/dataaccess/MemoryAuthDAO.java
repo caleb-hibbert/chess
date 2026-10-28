@@ -20,8 +20,8 @@ public class MemoryAuthDAO implements AuthDAO{
     public void deleteAuth(String authToken) throws DataAccessException{
         users.remove(authToken);
     }
+
     public void clear(){
         users.clear();
     }
-
 }
