@@ -96,7 +96,7 @@ public class UserService {
     }
 
 
-    public static String generateToken() {
+    private String generateToken() {
         return UUID.randomUUID().toString();
     }
 }

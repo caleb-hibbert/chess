@@ -24,7 +24,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void registerSuccessTest() throws DataAccessException{
+    void registerSuccess() throws DataAccessException{
         RegisterRequest request = new RegisterRequest("caleb", "mypassword", "caleb@byu.edu");
         RegisterResult result = userService.register(request);
         assertEquals("caleb", result.username());
@@ -71,7 +71,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void loginSuccessTest() throws InvalidRequestException, AlreadyTakenException, DataAccessException{
+    void loginSuccess() throws InvalidRequestException, AlreadyTakenException, DataAccessException{
         RegisterRequest registerRequest = new RegisterRequest("caleb", "mypassword", "caleb@byu.edu");
         RegisterResult registerResult = userService.register(registerRequest);
 
@@ -100,6 +100,16 @@ public class UserServiceTest {
 
 
     @Test
+    void loginFailUserDoesntExist() throws UnauthorizedException{
+        assertThrows(UnauthorizedException.class, () -> {
+            LoginRequest loginRequest = new LoginRequest("caleb", "badpassword");
+            LoginResult loginResult = userService.login(loginRequest);
+        });
+
+    }
+
+
+    @Test
     void logoutSuccess() throws UnauthorizedException, DataAccessException{
         RegisterRequest registerRequest = new RegisterRequest("caleb", "mypassword", "caleb@byu.edu");
         RegisterResult registerResult = userService.register(registerRequest);
@@ -119,12 +129,20 @@ public class UserServiceTest {
     void clearSuccess() throws DataAccessException{
         RegisterRequest registerRequest = new RegisterRequest("caleb", "mypassword", "caleb@byu.edu");
         RegisterResult registerResult = userService.register(registerRequest);
-
         userService.clear();
 
         assertNull(userDAO.getUser("caleb"));
-
-
-
     }
+
+
+//    @Test
+//    void tokenGenerationUnique() throws DataAccessException{
+//        RegisterRequest registerRequest = new RegisterRequest("caleb", "mypassword", "caleb@byu.edu");
+//        RegisterResult registerResult = userService.register(registerRequest);
+//
+//        assertNotEquals(registerResult.authToken(), userService.generateToken());
+//    }
+
+
+
 }
