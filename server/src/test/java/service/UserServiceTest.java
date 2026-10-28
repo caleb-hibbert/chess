@@ -47,6 +47,7 @@ public class UserServiceTest {
             RegisterRequest request2 = new RegisterRequest("caleb", "mypassword2", "caleb2@byu.edu");
             userService.register(request2);
         });
+
     }
 
     @Test
@@ -96,6 +97,10 @@ public class UserServiceTest {
             LoginRequest loginRequest = new LoginRequest("caleb", "");
             LoginResult loginResult = userService.login(loginRequest);
         });
+
+        LoginRequest loginRequest = new LoginRequest("caleb", "mypassword");
+        LoginResult loginResult = userService.login(loginRequest);
+
     }
 
 
