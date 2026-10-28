@@ -2,13 +2,15 @@ package dataaccess;
 import model.GameData;
 import model.UserData;
 
+import java.util.Map;
+
 public interface GameDAO {
 
     int createGame(String gameName) throws DataAccessException;
 
     void getGame(int gameID) throws DataAccessException;
 
-    void listGames() throws DataAccessException;
+    Map<Integer, GameData> listGames() throws DataAccessException;
 
     void updateGame(/*gameIDAndUsernameAndColor*/) throws DataAccessException;//how to represent "gameIDAndUsernameAndColor"
 

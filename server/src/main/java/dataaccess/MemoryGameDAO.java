@@ -21,8 +21,8 @@ public class MemoryGameDAO implements GameDAO {
 
     }
 
-    public void listGames() throws DataAccessException {
-
+    public Map<Integer, GameData> listGames() throws DataAccessException {
+        return games;
     }
 
     public void updateGame(/*gameIDAndUsernameAndColor*/) throws DataAccessException {//how to represent "gameIDAndUsernameAndColor"?

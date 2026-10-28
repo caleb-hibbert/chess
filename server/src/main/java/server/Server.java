@@ -158,7 +158,22 @@ public class Server {
         try{
             String authToken = ctx.header("authorization");
             GetGamesRequest request = new GetGamesRequest(authToken);
-            gameService.getGames(request);//TODO - finish
+            GetGamesResult result = gameService.getGames(request);
+
+            ctx.status(200);
+            ctx.contentType("application/json");
+            //ctx.result(gson.toJson(Map.of("games", result)));
+            ctx.result(gson.toJson(result));
+        }
+        catch (InvalidRequestException e){
+            ctx.status(400);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
+        }
+        catch (UnauthorizedException e){
+            ctx.status(401);
+            ctx.contentType("application/json");
+            ctx.result(gson.toJson(Map.of("message", e.getMessage())));
         }
     }
 

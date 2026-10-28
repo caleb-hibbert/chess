@@ -1,5 +1,6 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
@@ -7,6 +8,9 @@ import dataaccess.UserDAO;
 import model.UserData;
 import model.AuthData;
 import model.GameData;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 
 public class  GameService {
@@ -42,11 +46,14 @@ public class  GameService {
 
         int newGameID = gameDAO.createGame(createGameRequest.gameName());
         return new CreateGameResult(newGameID);
-
     }
 
-    public void getGames(GetGamesRequest getGamesRequest){
-        //TODO - finish
+    public GetGamesResult getGames(GetGamesRequest getGamesRequest) throws InvalidRequestException, DataAccessException{
+        checkAuthData(getGamesRequest.authToken());
+        Map<Integer, GameData> gameMap = gameDAO.listGames();
+        ArrayList<GameData> gameList = new ArrayList<>(gameMap.values());
+
+        return new GetGamesResult(gameList);
     }
 
 //    public void joinGame(){
