@@ -15,7 +15,7 @@ import java.sql.SQLException;
 
 public class MySqlUserDAO implements UserDAO {
 
-    public MySqlUserDAO() throws DataAccessException{
+    public MySqlUserDAO() throws DataAccessException {
         configureDatabase();
     }
 
@@ -36,10 +36,30 @@ public class MySqlUserDAO implements UserDAO {
             }
         }
         catch (SQLException ex){
-            throw new DataAccessException("Unable to create user", ex);
+            throw new DataAccessException("Error: Unable to create user", ex);
         }
-
     }
+    @Override
+    public UserData getUser(String username) throws DataAccessException{
+        String statement  = "INSERT INTO user (username, password_hash, email) values (?, ?, ?)";
+
+        try (Connection conn = DatabaseManager.getConnection()){
+
+            try (PreparedStatement ps = conn.prepareStatement(statement)){
+                ps.setString(1, user.username());
+                ps.setString(2, user.password());
+                ps.setString(3, user.email());
+
+                ps.executeUpdate();
+            }
+        }
+        catch (SQLException ex){
+            throw new DataAccessException("Error: Unable to create user", ex);
+        }
+    }
+
+
+
 
 
 
@@ -69,32 +89,11 @@ public class MySqlUserDAO implements UserDAO {
             throw new DataAccessException("Unable to configure database", ex);
         }
     }
+    
 
 
 
 
-
-
-
-
-//    public Pet addPet(Pet pet) throws ResponseException {
-//        var statement = "INSERT INTO pet (name, type, json) VALUES (?, ?, ?)";
-//        String json = new Gson().toJson(pet);
-//        int id = executeUpdate(statement, pet.name(), pet.type(), json);
-//        return new Pet(id, pet.name(), pet.type());
-//    }
-
-
-
-
-
-
-
-
-    @Override
-    public UserData getUser(String username) throws DataAccessException {
-        return null;
-    }
 
     @Override
     public String getPassword(String username) throws DataAccessException {

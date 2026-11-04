@@ -19,7 +19,13 @@ public class Server {
     private final GameService gameService;
 
     public Server() {
-        userDAO = new MySqlUserDAO();
+        try{
+            userDAO = new MySqlUserDAO();
+        }
+        catch (DataAccessException ex){
+            throw new IllegalStateException("Unable to initialize database", ex);
+        }//FIXME - is this a valid way to handle these?
+
         authDAO = new MemoryAuthDAO();
         gameDAO = new MemoryGameDAO();
         userService = new UserService(userDAO, authDAO);
@@ -36,6 +42,9 @@ public class Server {
         javalin.post("/game", this::createGame);
         javalin.get("/game", this::getGames);
         javalin.put("/game", this::joinGame);
+//        javalin.exception(DataAccessException.class, (ex, ctx) -> {
+//            sendErrorToClient(ctx, 500, "Internal server error");
+//        });
 
 
     }
@@ -61,6 +70,8 @@ public class Server {
             sendErrorToClient(ctx, 500, ex.getMessage());
         }
     }
+
+
 
 
     private void login(Context ctx) throws DataAccessException {
