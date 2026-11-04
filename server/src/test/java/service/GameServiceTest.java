@@ -23,9 +23,35 @@ public class GameServiceTest {
 
     @BeforeEach
     void initializeTests(){
-        gameDAO = new MemoryGameDAO();
-        authDAO = new MemoryAuthDAO();
-        userDAO = new MemoryUserDAO();
+
+
+        try{
+            userDAO = new MySqlUserDAO();
+        }
+        catch (DataAccessException ex){
+            throw new IllegalStateException("Unable to initialize database", ex);
+        }//FIXME - is this a valid way to handle these?
+
+
+        try{
+            authDAO = new MySqlAuthDAO();
+        }
+        catch (DataAccessException ex){
+            throw new IllegalStateException("Unable to initialize database", ex);
+        }//FIXME - is this a valid way to handle these?
+
+
+
+        try{
+            gameDAO = new MySqlGameDAO();
+        }
+        catch (DataAccessException ex){
+            throw new IllegalStateException("Unable to initialize database", ex);
+        }//FIXME - is this a valid way to handle these?
+
+//        gameDAO = new MySqlGameDAO();
+//        authDAO = new MemoryAuthDAO();
+//        userDAO = new MemoryUserDAO();
         userService = new UserService(userDAO, authDAO);
         gameService = new GameService(gameDAO, authDAO);
     }

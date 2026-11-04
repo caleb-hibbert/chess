@@ -18,8 +18,26 @@ public class UserServiceTest {
 
     @BeforeEach
     void initializeTests(){
-        userDAO = new MemoryUserDAO();
-        authDAO = new MemoryAuthDAO();
+
+        try{
+            userDAO = new MySqlUserDAO();
+        }
+        catch (DataAccessException ex){
+            throw new IllegalStateException("Unable to initialize database", ex);
+        }//FIXME - is this a valid way to handle these?
+
+
+        try{
+            authDAO = new MySqlAuthDAO();
+        }
+        catch (DataAccessException ex){
+            throw new IllegalStateException("Unable to initialize database", ex);
+        }//FIXME - is this a valid way to handle these?
+
+
+
+//        userDAO = new MemoryUserDAO();
+//        authDAO = new MemoryAuthDAO();
         userService = new UserService(userDAO, authDAO);
     }
 
@@ -32,7 +50,7 @@ public class UserServiceTest {
 
         UserData testUser = userDAO.getUser(request.username());
         assertEquals("caleb", testUser.username());
-        assertEquals("mypassword", testUser.password());
+        assertNotEquals("mypassword", testUser.password());
         assertEquals("caleb@byu.edu", testUser.email());
         AuthData testUserAuthData = authDAO.getAuth(result.authToken());
         assertEquals("caleb", testUserAuthData.username());
@@ -77,7 +95,7 @@ public class UserServiceTest {
         assertEquals("caleb", loginResult.username());
 
         UserData testUser = userDAO.getUser(loginRequest.username());
-        assertEquals(loginRequest.password(), testUser.password());
+        assertNotEquals(loginRequest.password(), testUser.password());
     }
 
     @Test

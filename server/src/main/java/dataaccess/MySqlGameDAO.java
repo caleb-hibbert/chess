@@ -103,23 +103,35 @@ public class MySqlGameDAO implements GameDAO{
     }
 
 
-
-
-
-
-
-
-
-
     private final Map<Integer, GameData> games = new HashMap<>();//FIXME - just to keep below happy until implemented
 
     @Override
     public void updateGame(GameData updatedGame) throws DataAccessException {//how to represent "gameIDAndUsernameAndColor"?
-        games.put(updatedGame.gameID(), updatedGame);
-    }
+        String statement  = "UPDATE game SET whiteUsername =?, blackUsername = ?, gameName = ?, gameState = ? WHERE gameID = ?";
+
+        try (Connection conn = DatabaseManager.getConnection()){
+
+            try (PreparedStatement ps = conn.prepareStatement(statement)){
+                ps.setString(1, updatedGame.whiteUsername());
+                ps.setString(2, updatedGame.blackUsername());
+                ps.setString(3, updatedGame.gameName());
+                ps.setString(4, gson.toJson(updatedGame.game()));
+                ps.setInt(5, updatedGame.gameID());
+                ps.executeUpdate();
+            }
+        }
+        catch (SQLException ex){
+            throw new DataAccessException("Error: Unable to retrieve auth token", ex);
+        }
 
 
-    
+
+
+    }//        games.put(updatedGame.gameID(), updatedGame);
+
+
+
+
 
     @Override
     public void clear() throws DataAccessException{
