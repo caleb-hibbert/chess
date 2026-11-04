@@ -63,7 +63,7 @@ public class MySqlUserDAO implements UserDAO {
 
 
     @Override
-    public String getPassword(String username) throws DataAccessException {
+    public String getPasswordHash(String username) throws DataAccessException {
         String statement  = "SELECT password_hash FROM user WHERE username = ?";
 
         try (Connection conn = DatabaseManager.getConnection()){
@@ -103,7 +103,7 @@ public class MySqlUserDAO implements UserDAO {
 
     private final String[] createStatements = {
         """
-        CREATE TABLE IF NOT EXISTS USER (
+        CREATE TABLE IF NOT EXISTS user (
         username VARCHAR(255) NOT NULL,
         password_hash VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL,

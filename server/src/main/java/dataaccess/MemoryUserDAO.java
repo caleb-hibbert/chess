@@ -20,7 +20,7 @@ public class MemoryUserDAO implements UserDAO{
     }
 
     @Override
-    public String getPassword(String username) throws DataAccessException{//my diagram did a getPassword, by username, but should PWs be hashed?
+    public String getPasswordHash(String username) throws DataAccessException{//my diagram did a getPassword, by username, but should PWs be hashed?
         return users.get(username).password();
     }
 

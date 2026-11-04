@@ -26,7 +26,15 @@ public class Server {
             throw new IllegalStateException("Unable to initialize database", ex);
         }//FIXME - is this a valid way to handle these?
 
-        authDAO = new MemoryAuthDAO();
+
+        try{
+            authDAO = new MySqlAuthDAO();
+        }
+        catch (DataAccessException ex){
+            throw new IllegalStateException("Unable to initialize database", ex);
+        }//FIXME - is this a valid way to handle these?
+
+
         gameDAO = new MemoryGameDAO();
         userService = new UserService(userDAO, authDAO);
         gameService = new GameService(gameDAO, authDAO);

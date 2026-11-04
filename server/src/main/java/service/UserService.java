@@ -5,6 +5,8 @@ import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import model.UserData;
 import model.AuthData;
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.util.UUID;
 
 
@@ -45,7 +47,8 @@ public class UserService {
         if (userData != null){
             throw new AlreadyTakenException("Error: already taken");//requested username already in use
         }
-        userDAO.createUser(new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email()));
+        String hashedPassword = BCrypt.hashpw(registerRequest.password(), BCrypt.gensalt());
+        userDAO.createUser(new UserData(registerRequest.username(), hashedPassword, registerRequest.email()));
         String authToken = generateToken();
         AuthData authData = new AuthData(authToken, registerRequest.username());
         authDAO.createAuth(authData);// generate authToken, associate w/ this user
@@ -70,9 +73,11 @@ public class UserService {
         if (userData == null){
             throw new UnauthorizedException("Error: unauthorized");//username that's trying to be logged in to doesn't exist
         }
+        String hashedPassword = userDAO.getPasswordHash(loginRequest.username());
+        String providedClearTextPassword = loginRequest.password();
 
-        if (loginRequest.password().equals(userDAO.getPassword(loginRequest.username()))){
-            // ^ if provided un/pw match db un/pw, they're good to go
+        if (BCrypt.checkpw(providedClearTextPassword, hashedPassword)){
+            // ^ if provided un/pw match hashed db un/pw, they're good to go
             String authToken = generateToken();
             AuthData authData = new AuthData(authToken, loginRequest.username());
             authDAO.createAuth(authData);// generate authToken, associate w/ this user

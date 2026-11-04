@@ -7,7 +7,7 @@ public interface UserDAO {
 
     UserData getUser(String username) throws DataAccessException;
 
-    String getPassword(String username) throws DataAccessException;//my diagram did a getPassword, by username, but should PWs be hashed?
+    String getPasswordHash(String username) throws DataAccessException;//my diagram did a getPassword, by username, but should PWs be hashed?
 
     void clear() throws DataAccessException;
 
