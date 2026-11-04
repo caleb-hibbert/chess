@@ -74,11 +74,35 @@ public class MySqlGameDAO implements GameDAO{
             }
         }
         catch (SQLException ex){
+            throw new DataAccessException("Error: Unable to get individual game for getGame", ex);
+        }
+    }
+
+
+    @Override
+    public Map<Integer, GameData> listGames() throws DataAccessException {
+        String statement  = "SELECT gameID, whiteUsername, blackUsername, gameName, gameState FROM game";
+        Map<Integer, GameData> gameList = new HashMap<>();
+
+
+        try (Connection conn = DatabaseManager.getConnection()){
+
+            try (PreparedStatement ps = conn.prepareStatement(statement)){
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()){
+                    ChessGame chessGame = gson.fromJson(rs.getString("gameState"), ChessGame.class);
+                    GameData gameData = new GameData(rs.getInt("gameID"), rs.getString("whiteUsername"), rs.getString("blackUsername"), rs.getString("gameName"), chessGame);
+                    gameList.put(gameData.gameID(), gameData);
+                }
+                return gameList;
+            }
+        }
+        catch (SQLException ex){
             throw new DataAccessException("Error: Unable to retrieve auth token", ex);
         }
-
-
     }
+
+
 
 
 
@@ -89,20 +113,27 @@ public class MySqlGameDAO implements GameDAO{
 
     private final Map<Integer, GameData> games = new HashMap<>();//FIXME - just to keep below happy until implemented
 
-
-    @Override
-    public Map<Integer, GameData> listGames() throws DataAccessException {
-        return games;
-    }
-
     @Override
     public void updateGame(GameData updatedGame) throws DataAccessException {//how to represent "gameIDAndUsernameAndColor"?
         games.put(updatedGame.gameID(), updatedGame);
     }
 
+
+    
+
     @Override
     public void clear() throws DataAccessException{
-        games.clear();
+        String statement  = "DELETE FROM game";
+
+        try (Connection conn = DatabaseManager.getConnection()){
+
+            try (PreparedStatement ps = conn.prepareStatement(statement)){
+                ps.executeUpdate();
+            }
+        }
+        catch (SQLException ex){
+            throw new DataAccessException("Error: Unable to clear game data", ex);
+        }
     }
 
 
