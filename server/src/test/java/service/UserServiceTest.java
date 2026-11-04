@@ -17,14 +17,14 @@ public class UserServiceTest {
     private UserService userService;
 
     @BeforeEach
-    void initializeTests(){
+    void initializeTests() throws DataAccessException {
 
         try{
             userDAO = new MySqlUserDAO();
         }
         catch (DataAccessException ex){
             throw new IllegalStateException("Unable to initialize database", ex);
-        }//FIXME - is this a valid way to handle these?
+        }
 
 
         try{
@@ -32,9 +32,10 @@ public class UserServiceTest {
         }
         catch (DataAccessException ex){
             throw new IllegalStateException("Unable to initialize database", ex);
-        }//FIXME - is this a valid way to handle these?
+        }
 
-
+        userDAO.clear();
+        authDAO.clear();
 
 //        userDAO = new MemoryUserDAO();
 //        authDAO = new MemoryAuthDAO();

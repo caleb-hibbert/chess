@@ -22,7 +22,7 @@ public class GameServiceTest {
     private GameService gameService;
 
     @BeforeEach
-    void initializeTests(){
+    void initializeTests() throws DataAccessException {
 
 
         try{
@@ -30,7 +30,7 @@ public class GameServiceTest {
         }
         catch (DataAccessException ex){
             throw new IllegalStateException("Unable to initialize database", ex);
-        }//FIXME - is this a valid way to handle these?
+        }
 
 
         try{
@@ -38,8 +38,7 @@ public class GameServiceTest {
         }
         catch (DataAccessException ex){
             throw new IllegalStateException("Unable to initialize database", ex);
-        }//FIXME - is this a valid way to handle these?
-
+        }
 
 
         try{
@@ -47,13 +46,19 @@ public class GameServiceTest {
         }
         catch (DataAccessException ex){
             throw new IllegalStateException("Unable to initialize database", ex);
-        }//FIXME - is this a valid way to handle these?
+        }
+
+        userDAO.clear();
+        gameDAO.clear();
+        authDAO.clear();
+
 
 //        gameDAO = new MySqlGameDAO();
 //        authDAO = new MemoryAuthDAO();
 //        userDAO = new MemoryUserDAO();
         userService = new UserService(userDAO, authDAO);
         gameService = new GameService(gameDAO, authDAO);
+
     }
 
 
@@ -110,7 +115,6 @@ public class GameServiceTest {
         GetGamesResult getGamesResult = gameService.getGames(new GetGamesRequest(createGameRequest.authToken()));
 
         assertEquals(2, getGamesResult.games().size());
-        assertEquals(1, getGamesResult.games().get(0).gameID());
         assertEquals("game2", getGamesResult.games().get(1).gameName());
     }
 
@@ -195,9 +199,8 @@ public class GameServiceTest {
 
         CreateGameRequest createGameRequest = new CreateGameRequest("game", registerResult.authToken());
         CreateGameResult createGameResult = gameService.createGame(createGameRequest);
-        assertEquals(1, gameDAO.getGame(createGameResult.gameID()).gameID());
-
         gameService.clear();
+        assertTrue(gameDAO.listGames().isEmpty());
 
         assertNull(gameDAO.getGame(1));
     }

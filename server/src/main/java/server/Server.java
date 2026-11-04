@@ -24,7 +24,7 @@ public class Server {
         }
         catch (DataAccessException ex){
             throw new IllegalStateException("Unable to initialize database", ex);
-        }//FIXME - is this a valid way to handle these?
+        }//is this the best way to handle these?
 
 
         try{
@@ -32,7 +32,7 @@ public class Server {
         }
         catch (DataAccessException ex){
             throw new IllegalStateException("Unable to initialize database", ex);
-        }//FIXME - is this a valid way to handle these?
+        }
 
 
 
@@ -41,7 +41,7 @@ public class Server {
         }
         catch (DataAccessException ex){
             throw new IllegalStateException("Unable to initialize database", ex);
-        }//FIXME - is this a valid way to handle these?
+        }
 
 
 
