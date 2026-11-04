@@ -23,7 +23,7 @@ public class Server {
             userDAO = new MySqlUserDAO();
         }
         catch (DataAccessException ex){
-            throw new IllegalStateException("Unable to initialize database", ex);
+            throw new IllegalStateException("Error: Unable to initialize database", ex);
         }//is this the best way to handle these?
 
 
@@ -31,7 +31,7 @@ public class Server {
             authDAO = new MySqlAuthDAO();
         }
         catch (DataAccessException ex){
-            throw new IllegalStateException("Unable to initialize database", ex);
+            throw new IllegalStateException("Error: Unable to initialize database", ex);
         }
 
 
@@ -40,7 +40,7 @@ public class Server {
             gameDAO = new MySqlGameDAO();
         }
         catch (DataAccessException ex){
-            throw new IllegalStateException("Unable to initialize database", ex);
+            throw new IllegalStateException("Error: Unable to initialize database", ex);
         }
 
 
@@ -59,9 +59,9 @@ public class Server {
         javalin.post("/game", this::createGame);
         javalin.get("/game", this::getGames);
         javalin.put("/game", this::joinGame);
-//        javalin.exception(DataAccessException.class, (ex, ctx) -> {
-//            sendErrorToClient(ctx, 500, "Internal server error");
-//        });
+        javalin.exception(DataAccessException.class, (ex, ctx) -> {
+            sendErrorToClient(ctx, 500, "Error: Internal server error");
+        });
 
 
     }
@@ -208,6 +208,9 @@ public class Server {
         }
         catch (AlreadyTakenException e){
             sendErrorToClient(ctx, 403, e.getMessage());
+        }
+        catch (DataAccessException e){
+            sendErrorToClient(ctx, 500, e.getMessage());
         }
     }
 

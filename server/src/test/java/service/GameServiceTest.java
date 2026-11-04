@@ -29,7 +29,7 @@ public class GameServiceTest {
             userDAO = new MySqlUserDAO();
         }
         catch (DataAccessException ex){
-            throw new IllegalStateException("Unable to initialize database", ex);
+            throw new IllegalStateException("Error: Unable to initialize database", ex);
         }
 
 
@@ -37,7 +37,7 @@ public class GameServiceTest {
             authDAO = new MySqlAuthDAO();
         }
         catch (DataAccessException ex){
-            throw new IllegalStateException("Unable to initialize database", ex);
+            throw new IllegalStateException("Error: Unable to initialize database", ex);
         }
 
 
@@ -45,7 +45,7 @@ public class GameServiceTest {
             gameDAO = new MySqlGameDAO();
         }
         catch (DataAccessException ex){
-            throw new IllegalStateException("Unable to initialize database", ex);
+            throw new IllegalStateException("Error: Unable to initialize database", ex);
         }
 
         userDAO.clear();
@@ -182,11 +182,11 @@ public class GameServiceTest {
             gameService.joinGame(joinGameRequest);
         });//join gameID that doesn't exist
 
-        JoinGameRequest joinGameRequest = new JoinGameRequest(registerResult.authToken(), "BLACK", 1);
+        JoinGameRequest joinGameRequest = new JoinGameRequest(registerResult.authToken(), "BLACK", createGameResult.gameID());
         gameService.joinGame(joinGameRequest);
 
         assertThrows(AlreadyTakenException.class, () -> {
-            JoinGameRequest joinGameRequest2 = new JoinGameRequest(registerResult.authToken(), "BLACK", 1);
+            JoinGameRequest joinGameRequest2 = new JoinGameRequest(registerResult.authToken(), "BLACK", createGameResult.gameID());
             gameService.joinGame(joinGameRequest2);
         });//join game where requested color is already taken
     }

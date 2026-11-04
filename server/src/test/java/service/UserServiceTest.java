@@ -23,7 +23,7 @@ public class UserServiceTest {
             userDAO = new MySqlUserDAO();
         }
         catch (DataAccessException ex){
-            throw new IllegalStateException("Unable to initialize database", ex);
+            throw new IllegalStateException("Error: Unable to initialize database", ex);
         }
 
 
@@ -31,7 +31,7 @@ public class UserServiceTest {
             authDAO = new MySqlAuthDAO();
         }
         catch (DataAccessException ex){
-            throw new IllegalStateException("Unable to initialize database", ex);
+            throw new IllegalStateException("Error: Unable to initialize database", ex);
         }
 
         userDAO.clear();
