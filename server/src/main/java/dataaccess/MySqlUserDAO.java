@@ -41,25 +41,63 @@ public class MySqlUserDAO implements UserDAO {
     }
     @Override
     public UserData getUser(String username) throws DataAccessException{
-        String statement  = "INSERT INTO user (username, password_hash, email) values (?, ?, ?)";
+        String statement  = "SELECT username, password_hash, email FROM user WHERE username = ?";
 
         try (Connection conn = DatabaseManager.getConnection()){
 
             try (PreparedStatement ps = conn.prepareStatement(statement)){
-                ps.setString(1, user.username());
-                ps.setString(2, user.password());
-                ps.setString(3, user.email());
+                ps.setString(1, username);
 
-                ps.executeUpdate();
+                try (ResultSet rs = ps.executeQuery()){
+                    if (rs.next()){
+                        return new UserData(rs.getString("username"), rs.getString("password_hash"), rs.getString("email"));
+                    }
+                }
             }
         }
         catch (SQLException ex){
-            throw new DataAccessException("Error: Unable to create user", ex);
+            throw new DataAccessException("Error: Unable to retrieve user", ex);
         }
+        return null;
     }
 
 
+    @Override
+    public String getPassword(String username) throws DataAccessException {
+        String statement  = "SELECT password_hash FROM user WHERE username = ?";
 
+        try (Connection conn = DatabaseManager.getConnection()){
+
+            try (PreparedStatement ps = conn.prepareStatement(statement)){
+                ps.setString(1, username);
+
+                try (ResultSet rs = ps.executeQuery()){
+                    if (rs.next()){
+                        return rs.getString("password_hash");
+                    }
+                }
+            }
+        }
+        catch (SQLException ex){
+            throw new DataAccessException("Error: Unable to retrieve password hash", ex);
+        }
+        return null;
+    }
+
+    @Override
+    public void clear() throws DataAccessException {
+        String statement  = "DELETE FROM user";
+
+        try (Connection conn = DatabaseManager.getConnection()){
+
+            try (PreparedStatement ps = conn.prepareStatement(statement)){
+               ps.executeUpdate();
+            }
+        }
+        catch (SQLException ex){
+            throw new DataAccessException("Error: Unable to retrieve password hash", ex);
+        }
+    }
 
 
 
@@ -89,21 +127,13 @@ public class MySqlUserDAO implements UserDAO {
             throw new DataAccessException("Unable to configure database", ex);
         }
     }
-    
 
 
 
 
 
-    @Override
-    public String getPassword(String username) throws DataAccessException {
-        return "";
-    }
 
-    @Override
-    public void clear() throws DataAccessException {
 
-    }
 
 
 
