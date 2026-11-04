@@ -51,11 +51,6 @@ public class GameServiceTest {
         userDAO.clear();
         gameDAO.clear();
         authDAO.clear();
-
-
-//        gameDAO = new MySqlGameDAO();
-//        authDAO = new MemoryAuthDAO();
-//        userDAO = new MemoryUserDAO();
         userService = new UserService(userDAO, authDAO);
         gameService = new GameService(gameDAO, authDAO);
 

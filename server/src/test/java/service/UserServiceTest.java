@@ -36,9 +36,6 @@ public class UserServiceTest {
 
         userDAO.clear();
         authDAO.clear();
-
-//        userDAO = new MemoryUserDAO();
-//        authDAO = new MemoryAuthDAO();
         userService = new UserService(userDAO, authDAO);
     }
 

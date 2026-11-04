@@ -66,7 +66,11 @@ public class MySqlGameDAO implements GameDAO{
                 try (ResultSet rs = ps.executeQuery()){
                     if (rs.next()){
                         ChessGame chessGame = gson.fromJson(rs.getString("gameState"), ChessGame.class);
-                        GameData gameData = new GameData(rs.getInt("gameID"), rs.getString("whiteUsername"), rs.getString("blackUsername"), rs.getString("gameName"), chessGame);
+                        GameData gameData = new GameData(
+                                rs.getInt("gameID"),
+                                rs.getString("whiteUsername"),
+                                rs.getString("blackUsername"),
+                                rs.getString("gameName"), chessGame);
                         return gameData;
                     }
                     return null;
@@ -91,7 +95,11 @@ public class MySqlGameDAO implements GameDAO{
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()){
                     ChessGame chessGame = gson.fromJson(rs.getString("gameState"), ChessGame.class);
-                    GameData gameData = new GameData(rs.getInt("gameID"), rs.getString("whiteUsername"), rs.getString("blackUsername"), rs.getString("gameName"), chessGame);
+                    GameData gameData = new GameData(
+                            rs.getInt("gameID"),
+                            rs.getString("whiteUsername"),
+                            rs.getString("blackUsername"),
+                            rs.getString("gameName"), chessGame);
                     gameList.put(gameData.gameID(), gameData);
                 }
                 return gameList;
@@ -102,8 +110,6 @@ public class MySqlGameDAO implements GameDAO{
         }
     }
 
-
-    private final Map<Integer, GameData> games = new HashMap<>();//FIXME - just to keep below happy until implemented
 
     @Override
     public void updateGame(GameData updatedGame) throws DataAccessException {//how to represent "gameIDAndUsernameAndColor"?

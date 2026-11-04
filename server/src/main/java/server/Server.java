@@ -107,6 +107,9 @@ public class Server {
         catch (UnauthorizedException e){
             sendErrorToClient(ctx, 401, e.getMessage());
         }
+        catch (DataAccessException e){
+            sendErrorToClient(ctx, 500, e.getMessage());
+        }
     }
 
 
@@ -125,6 +128,9 @@ public class Server {
         }
         catch (UnauthorizedException e){
             sendErrorToClient(ctx, 401, e.getMessage());
+        }
+        catch (DataAccessException e){
+            sendErrorToClient(ctx, 500, e.getMessage());
         }
     }
 
@@ -164,7 +170,9 @@ public class Server {
         catch (InvalidRequestException e){
             sendErrorToClient(ctx, 400, e.getMessage());
         }
-
+        catch (DataAccessException e){
+            sendErrorToClient(ctx, 500, e.getMessage());
+        }
     }
 
 
@@ -184,6 +192,9 @@ public class Server {
         }
         catch (UnauthorizedException e){
             sendErrorToClient(ctx, 401, e.getMessage());
+        }
+        catch (DataAccessException e){
+            sendErrorToClient(ctx, 500, e.getMessage());
         }
     }
 
