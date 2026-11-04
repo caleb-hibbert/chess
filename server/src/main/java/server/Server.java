@@ -19,7 +19,7 @@ public class Server {
     private final GameService gameService;
 
     public Server() {
-        userDAO = new MemoryUserDAO();
+        userDAO = new MySqlUserDAO();
         authDAO = new MemoryAuthDAO();
         gameDAO = new MemoryGameDAO();
         userService = new UserService(userDAO, authDAO);
@@ -56,6 +56,9 @@ public class Server {
         catch (AlreadyTakenException e){
             sendErrorToClient(ctx, 403, e.getMessage());
 
+        }
+        catch (DataAccessException ex){
+            sendErrorToClient(ctx, 500, ex.getMessage());
         }
     }
 

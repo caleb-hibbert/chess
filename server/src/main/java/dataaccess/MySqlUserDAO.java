@@ -7,23 +7,74 @@ import java.util.Map;
 import java.util.Properties;
 import java.sql.*;
 import com.google.gson.Gson;
+import java.sql.SQLException;
+
+
 
 
 
 public class MySqlUserDAO implements UserDAO {
 
+    public MySqlUserDAO() throws DataAccessException{
+        configureDatabase();
+    }
+
+
+
     @Override
-    public void createUser(UserData u) throws DataAccessException{
-        String statement = "INSERT INTO user (username, password_hash, email) values (?, ?, ?)";
-        String json = new Gson().toJson(u);
+    public void createUser(UserData user) throws DataAccessException{
+        String statement  = "INSERT INTO user (username, password_hash, email) values (?, ?, ?)";
 
-        try (Connection conn  = DatabaseManager.getConnection()){
+        try (Connection conn = DatabaseManager.getConnection()){
 
+            try (PreparedStatement ps = conn.prepareStatement(statement)){
+                ps.setString(1, user.username());
+                ps.setString(2, user.password());
+                ps.setString(3, user.email());
+
+                ps.executeUpdate();
+            }
         }
-        catch (Exception e){
+        catch (SQLException ex){
+            throw new DataAccessException("Unable to create user", ex);
+        }
 
+    }
+
+
+
+    private final String[] createStatements = {
+        """
+        CREATE TABLE IF NOT EXISTS USER (
+        username VARCHAR(255) NOT NULL,
+        password_hash VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        PRIMARY KEY (username)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+        """
+    };
+
+
+
+    private void configureDatabase() throws DataAccessException {
+        DatabaseManager.createDatabase();
+        try (Connection conn = DatabaseManager.getConnection()) {
+            for (String statement : createStatements) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        }
+        catch (SQLException ex) {
+            throw new DataAccessException("Unable to configure database", ex);
         }
     }
+
+
+
+
+
+
 
 
 //    public Pet addPet(Pet pet) throws ResponseException {
@@ -56,24 +107,6 @@ public class MySqlUserDAO implements UserDAO {
     }
 
 
-//
-//    public class MemoryUserDAO implements UserDAO{
-//        private final Map<String, UserData> users = new HashMap<>();
-//
-//        public void createUser(UserData u) throws DataAccessException{
-//            users.put(u.username(), u);
-//        }
-//
-//        public UserData getUser(String username) throws DataAccessException{
-//            return users.get(username);
-//        }
-//
-//        public String getPassword(String username) throws DataAccessException{//my diagram did a getPassword, by username, but should PWs be hashed?
-//            return users.get(username).password();
-//        }
-//
-//        public void clear() throws DataAccessException{
-//            users.clear();
-//        }
+
 
 }
