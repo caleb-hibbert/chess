@@ -1,13 +1,14 @@
 package service;
 
 import dataaccess.*;
+import dataaccess.sql.MySqlAuthDAO;
+import dataaccess.sql.MySqlUserDAO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import model.UserData;
 import model.AuthData;
-import java.util.UUID;
 
 
 public class UserServiceTest {

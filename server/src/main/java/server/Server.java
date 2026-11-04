@@ -2,10 +2,12 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.*;
+import dataaccess.sql.MySqlAuthDAO;
+import dataaccess.sql.MySqlGameDAO;
+import dataaccess.sql.MySqlUserDAO;
 import io.javalin.*;
 import io.javalin.http.Context;
 import java.util.Map;
-import java.util.HashMap;
 
 import service.*;
 
@@ -62,8 +64,6 @@ public class Server {
         javalin.exception(DataAccessException.class, (ex, ctx) -> {
             sendErrorToClient(ctx, 500, "Error: Internal server error");
         });
-
-
     }
 
     private void register(Context ctx) throws DataAccessException {
@@ -145,10 +145,8 @@ public class Server {
             ctx.contentType("application/json");
         }
         catch(DataAccessException e){
-            ctx.status(500);
-            ctx.contentType("application/json");
+            sendErrorToClient(ctx, 500, e.getMessage());
         }
-
     }
 
 

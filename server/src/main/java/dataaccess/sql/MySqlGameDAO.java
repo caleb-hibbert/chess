@@ -1,17 +1,13 @@
-package dataaccess;
+package dataaccess.sql;
 
 import chess.ChessGame;
-import model.AuthData;
+import dataaccess.DataAccessException;
+import dataaccess.GameDAO;
 import model.GameData;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import model.UserData;
-import dataaccess.DatabaseManager;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 import java.sql.*;
 import com.google.gson.Gson;
 import java.sql.SQLException;
@@ -20,7 +16,7 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 
 
-public class MySqlGameDAO implements GameDAO{
+public class MySqlGameDAO implements GameDAO {
     Gson gson = new Gson();
 
     public MySqlGameDAO() throws DataAccessException {

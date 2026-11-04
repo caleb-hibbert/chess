@@ -1,17 +1,13 @@
-package dataaccess;
+package dataaccess.sql;
 
+import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import model.AuthData;
 
-import model.UserData;
-import dataaccess.DatabaseManager;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 import java.sql.*;
-import com.google.gson.Gson;
 import java.sql.SQLException;
 
-public class MySqlAuthDAO implements AuthDAO{
+public class MySqlAuthDAO implements AuthDAO {
     //private final Map<String, AuthData> users = new HashMap<>();
 
     public MySqlAuthDAO() throws DataAccessException {
