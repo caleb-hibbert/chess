@@ -36,14 +36,13 @@ public class MySqlAuthDAO implements AuthDAO{
         catch (SQLException ex){
             throw new DataAccessException("Error: Unable to create auth token", ex);
         }
-
     }
 
     public AuthData getAuth(String authToken) throws DataAccessException{
         String statement  = "SELECT authToken, username FROM auth WHERE authToken = ?";
 
         try (Connection conn = DatabaseManager.getConnection()){
-//
+
             try (PreparedStatement ps = conn.prepareStatement(statement)){
                 ps.setString(1, authToken);
 
@@ -60,46 +59,41 @@ public class MySqlAuthDAO implements AuthDAO{
         return null;
 
 
-    }//        return users.get(authToken);
-
-//    @Override
-//    public UserData getUser(String username) throws DataAccessException{
-//        String statement  = "SELECT username, password_hash, email FROM user WHERE username = ?";
-//
-//        try (Connection conn = DatabaseManager.getConnection()){
-//
-//            try (PreparedStatement ps = conn.prepareStatement(statement)){
-//                ps.setString(1, username);
-//
-//                try (ResultSet rs = ps.executeQuery()){
-//                    if (rs.next()){
-//                        return new UserData(rs.getString("username"), rs.getString("password_hash"), rs.getString("email"));
-//                    }
-//                }
-//            }
-//        }
-//        catch (SQLException ex){
-//            throw new DataAccessException("Error: Unable to retrieve user", ex);
-//        }
-//        return null;
-//    }
-
-
-
+    }
 
 
     public void deleteAuth(String authToken) throws DataAccessException{
-        //users.remove(authToken);
+        String statement  = "DELETE FROM auth WHERE authToken = ?";
+
+        try (Connection conn = DatabaseManager.getConnection()){
+
+            try (PreparedStatement ps = conn.prepareStatement(statement)){
+                ps.setString(1, authToken);
+
+                ps.executeUpdate();
+            }
+        }
+        catch (SQLException ex){
+            throw new DataAccessException("Error: Unable to delete auth token", ex);
+        }
+
+
     }
 
-    public void clear(){
-        //users.clear();
+
+    public void clear() throws DataAccessException{
+        String statement  = "DELETE FROM auth";
+
+        try (Connection conn = DatabaseManager.getConnection()){
+
+            try (PreparedStatement ps = conn.prepareStatement(statement)){
+                ps.executeUpdate();
+            }
+        }
+        catch (SQLException ex){
+            throw new DataAccessException("Error: Unable to clear auth data", ex);
+        }
     }
-
-
-
-
-
 
 
     private final String[] createStatements = {

@@ -21,7 +21,7 @@ public class MemoryAuthDAO implements AuthDAO{
         users.remove(authToken);
     }
 
-    public void clear(){
+    public void clear() throws DataAccessException{
         users.clear();
     }
 }

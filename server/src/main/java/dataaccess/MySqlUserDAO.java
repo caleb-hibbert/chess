@@ -95,7 +95,7 @@ public class MySqlUserDAO implements UserDAO {
             }
         }
         catch (SQLException ex){
-            throw new DataAccessException("Error: Unable to retrieve password hash", ex);
+            throw new DataAccessException("Error: Unable to clear user data", ex);
         }
     }
 
