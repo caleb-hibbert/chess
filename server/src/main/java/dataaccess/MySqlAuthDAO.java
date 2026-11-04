@@ -1,8 +1,6 @@
 package dataaccess;
 
 import model.AuthData;
-import java.util.HashMap;
-import java.util.Map;
 
 import model.UserData;
 import dataaccess.DatabaseManager;
@@ -57,8 +55,6 @@ public class MySqlAuthDAO implements AuthDAO{
             throw new DataAccessException("Error: Unable to retrieve auth token", ex);
         }
         return null;
-
-
     }
 
 
@@ -76,8 +72,6 @@ public class MySqlAuthDAO implements AuthDAO{
         catch (SQLException ex){
             throw new DataAccessException("Error: Unable to delete auth token", ex);
         }
-
-
     }
 
 
@@ -118,7 +112,7 @@ public class MySqlAuthDAO implements AuthDAO{
             }
         }
         catch (SQLException ex) {
-            throw new DataAccessException("Unable to configure database", ex);
+            throw new DataAccessException("Unable to configure auth database", ex);
         }
     }
 }

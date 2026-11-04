@@ -23,7 +23,7 @@ public class MySqlUserDAO implements UserDAO {
 
     @Override
     public void createUser(UserData user) throws DataAccessException{
-        String statement  = "INSERT INTO user (username, password_hash, email) values (?, ?, ?)";
+        String statement  = "INSERT INTO user (username, passwordHash, email) values (?, ?, ?)";
 
         try (Connection conn = DatabaseManager.getConnection()){
 
@@ -41,7 +41,7 @@ public class MySqlUserDAO implements UserDAO {
     }
     @Override
     public UserData getUser(String username) throws DataAccessException{
-        String statement  = "SELECT username, password_hash, email FROM user WHERE username = ?";
+        String statement  = "SELECT username, passwordHash, email FROM user WHERE username = ?";
 
         try (Connection conn = DatabaseManager.getConnection()){
 
@@ -50,7 +50,7 @@ public class MySqlUserDAO implements UserDAO {
 
                 try (ResultSet rs = ps.executeQuery()){
                     if (rs.next()){
-                        return new UserData(rs.getString("username"), rs.getString("password_hash"), rs.getString("email"));
+                        return new UserData(rs.getString("username"), rs.getString("passwordHash"), rs.getString("email"));
                     }
                 }
             }
@@ -64,7 +64,7 @@ public class MySqlUserDAO implements UserDAO {
 
     @Override
     public String getPasswordHash(String username) throws DataAccessException {
-        String statement  = "SELECT password_hash FROM user WHERE username = ?";
+        String statement  = "SELECT passwordHash FROM user WHERE username = ?";
 
         try (Connection conn = DatabaseManager.getConnection()){
 
@@ -73,7 +73,7 @@ public class MySqlUserDAO implements UserDAO {
 
                 try (ResultSet rs = ps.executeQuery()){
                     if (rs.next()){
-                        return rs.getString("password_hash");
+                        return rs.getString("passwordHash");
                     }
                 }
             }
@@ -105,7 +105,7 @@ public class MySqlUserDAO implements UserDAO {
         """
         CREATE TABLE IF NOT EXISTS user (
         username VARCHAR(255) NOT NULL,
-        password_hash VARCHAR(255) NOT NULL,
+        passwordHash VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL,
         PRIMARY KEY (username)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
@@ -124,18 +124,7 @@ public class MySqlUserDAO implements UserDAO {
             }
         }
         catch (SQLException ex) {
-            throw new DataAccessException("Unable to configure database", ex);
+            throw new DataAccessException("Unable to configure user database", ex);
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -35,7 +35,16 @@ public class Server {
         }//FIXME - is this a valid way to handle these?
 
 
-        gameDAO = new MemoryGameDAO();
+
+        try{
+            gameDAO = new MySqlGameDAO();
+        }
+        catch (DataAccessException ex){
+            throw new IllegalStateException("Unable to initialize database", ex);
+        }//FIXME - is this a valid way to handle these?
+
+
+
         userService = new UserService(userDAO, authDAO);
         gameService = new GameService(gameDAO, authDAO);
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
