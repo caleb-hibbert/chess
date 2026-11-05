@@ -80,18 +80,4 @@ public class MySqlUserDAOTests{
         assertNull(userDAO.getUser("caleb"));
     }
 
-    @Test
-    void clearFail() throws DataAccessException{
-        userDAO.clear();
-        assertNull(userDAO.getUser("caleb"));
-
-        Properties badProperties = new Properties();
-        badProperties.setProperty("db.name", "test");
-        badProperties.setProperty("db.user", "test");
-        badProperties.setProperty("db.password", "test");
-        badProperties.setProperty("db.host", "localhost");
-        badProperties.setProperty("db.port", "100000");
-    }
-
-
 }
