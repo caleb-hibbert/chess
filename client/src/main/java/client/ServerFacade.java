@@ -5,15 +5,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import com.google.gson.Gson;
 import model.AuthData;
-import model.GameData;
-import dataaccess.*;
-import service.RegisterRequest;
+import model.*;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.net.http.*;
-import dataaccess.*;
-
+import exception.ResponseException;
+import model.LoginResult;
 
 
 public class ServerFacade {
@@ -25,20 +23,14 @@ public class ServerFacade {
 
 
     ServerFacade(int port) throws Exception {
-        try{
             this.port = port;
             this.serverUrl = "http://localhost:" + port;
             this.client = HttpClient.newHttpClient();
             this.gson = new Gson();
-
-        }
-        catch (Exception e){
-            throw new Exception("ServerFacade unable to be created");//FIXME - change this later
-        }
     }
 
 
-    public AuthData register(String username, String password, String email) throws Exception{
+    public AuthData register(String username, String password, String email) throws ResponseException{
         var requestData = new RegisterRequest(username, password, email);
 //        var request = HttpRequest.newBuilder()
 //                .uri(URI.create(serverUrl + "/user"))
@@ -47,20 +39,45 @@ public class ServerFacade {
 
         var request = buildRequest("POST", "/user", requestData);
         var response = sendRequest(request);
-        return han
-
-    }
-
-
-    //        javalin.post("/user", this::register);
+        return handleResponse(response, AuthData.class);
+    }// javalin.post("/user", this::register);
 
 
 
-//    public Pet addPet(Pet pet) throws ResponseException {
-//        var request = buildRequest("POST", "/pet", pet);
-//        var response = sendRequest(request);
-//        return handleResponse(response, Pet.class);
-//    }
+    public AuthData login(String username, String password) throws ResponseException{
+        var requestData = new LoginRequest(username, password);
+        var request = buildRequest("POST", "/session", requestData);
+        var response = sendRequest(request);
+        return handleResponse(response, AuthData.class);
+    }// javalin.post("/session", this::login);
+
+
+    public void logout(String authToken) throws ResponseException {
+        var requestData = new LogoutRequest(authToken);
+        var request = buildRequest("DELETE", "/session", null);
+        var response = sendRequest(request);
+        handleResponse(response, null);
+    }// javalin.delete("/session", this::logout);
+
+
+    public int createGame(String gameName, String authToken) throws ResponseException{
+        var requestData = new CreateGameRequest(gameName, authToken);
+        var request = buildRequest("POST", "/game", requestData);
+        var response = sendRequest(request);
+        return handleResponse(response, CreateGameResult.class).gameID();
+
+    }// javalin.post("/game", this::createGame);
+
+
+
+
+
+// javalin.get("/game", this::getGames);
+// javalin.put("/game", this::joinGame);
+
+
+
+
 
 
     private HttpRequest buildRequest(String method, String path, Object body) {
@@ -83,12 +100,12 @@ public class ServerFacade {
     }
 
 
-    private HttpResponse<String> sendRequest(HttpRequest request) throws Exception {
+    private HttpResponse<String> sendRequest(HttpRequest request) throws ResponseException {
         try {
             return client.send(request, BodyHandlers.ofString());
         }
         catch (Exception ex) {
-            throw new Exception(ex.getMessage());//FIXME update exception type
+            throw new ResponseException(ResponseException.Code.ServerError, ex.getMessage());
         }
     }
 
@@ -119,4 +136,4 @@ public class ServerFacade {
 
 
 
-}
+

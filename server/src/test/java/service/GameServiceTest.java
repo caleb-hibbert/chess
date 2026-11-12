@@ -4,7 +4,10 @@ import dataaccess.*;
 import dataaccess.sql.MySqlAuthDAO;
 import dataaccess.sql.MySqlGameDAO;
 import dataaccess.sql.MySqlUserDAO;
+import model.CreateGameRequest;
+import model.CreateGameResult;
 import model.GameData;
+import model.RegisterRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

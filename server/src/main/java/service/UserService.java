@@ -3,8 +3,7 @@ package service;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
-import model.UserData;
-import model.AuthData;
+import model.*;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.UUID;
