@@ -64,7 +64,11 @@ public class ServerFacade {
         var requestData = new CreateGameRequest(gameName, authToken);
         var request = buildRequest("POST", "/game", requestData);
         var response = sendRequest(request);
-        return handleResponse(response, CreateGameResult.class).gameID();
+        var result = handleResponse(response, CreateGameResult.class);
+        if (result == null){
+            throw new ResponseException(ResponseException.Code.ServerError, "Create game returned an empty response");
+        }
+        return result.gameID();
 
     }// javalin.post("/game", this::createGame);
 
