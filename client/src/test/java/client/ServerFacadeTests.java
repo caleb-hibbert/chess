@@ -7,6 +7,7 @@ import dataaccess.sql.MySqlAuthDAO;
 import dataaccess.sql.MySqlUserDAO;
 import dataaccess.sql.MySqlGameDAO;
 import exception.ResponseException;
+import model.CreateGameResult;
 import org.junit.jupiter.api.*;
 import server.Server;
 import service.AlreadyTakenException;
@@ -128,6 +129,33 @@ public class ServerFacadeTests {
     void getGamesFailure() throws ResponseException {
         assertThrows(ResponseException.class, () ->{
             facade.getGames("badAuthToken");
+        });
+    }
+
+
+    @Test
+    void joinGameSuccess() throws ResponseException {
+        var authData = facade.register("caleb", "mypassword", "caleb@byu.edu");
+        var authData2 = facade.register("caleb2", "mypassword2", "caleb2@byu.edu");
+        int gameID = facade.createGame("testGame", authData.authToken());
+
+        assertDoesNotThrow(() -> facade.joinGame(authData.authToken(), "WHITE", gameID));
+        assertDoesNotThrow(() -> facade.joinGame(authData2.authToken(), "BLACK", gameID));
+    }
+
+
+    @Test
+    void joinGameFailure() throws ResponseException {
+        var authData = facade.register("caleb", "mypassword", "caleb@byu.edu");
+        var authData2 = facade.register("caleb2", "mypassword2", "caleb2@byu.edu");
+        int gameID = facade.createGame("testGame", authData.authToken());
+        facade.joinGame(authData.authToken(), "WHITE", gameID);
+
+        assertThrows(ResponseException.class, () ->{
+            facade.joinGame(authData.authToken(), "WHITE", gameID);
+        });
+        assertThrows(ResponseException.class, () ->{
+            facade.joinGame(authData2.authToken(), "WHITE", gameID);
         });
     }
 

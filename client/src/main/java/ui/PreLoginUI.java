@@ -5,12 +5,12 @@ import exception.ResponseException;
 
 import java.util.Scanner;
 
-public class PreLogin {
+public class PreLoginUI {
     private final ServerFacade facade;
     private final Scanner scanner;
     private State state = State.SIGNEDOUT;
 
-    public PreLogin(ServerFacade facade){
+    public PreLoginUI(ServerFacade facade){
         this.facade = facade;
         this.scanner = new Scanner(System.in);
     }
@@ -53,6 +53,13 @@ public class PreLogin {
 
 
     private void register(){
+        System.out.println("Username: ");
+        String username = scanner.nextLine().trim();
+        System.out.println("Password: ");
+        String password = scanner.nextLine().trim();
+        System.out.println("Email: ");
+        String email = scanner.nextLine().trim();
+
 
     }
 
