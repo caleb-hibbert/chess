@@ -71,8 +71,16 @@ public class ClientUI {
                     }
                     yield login(params[0], params[1]);
                 }
+                case "logout" -> {
+                    if (params.length != 0){
+                        yield "Incorrect number of arguments entered for login - use the format \"Logout\"";
+                    }
+                    yield logout();
+                }
+
                 case "help" -> help();
                 case "quit" -> "quit";
+                case "clear" -> clear();
 
                 default -> help();
             };
@@ -92,19 +100,27 @@ public class ClientUI {
         assertSignedOut();
         this.authData = facade.register(username, password, email);
         this.username = username;
-        return String.format("You're signed as %s", username);
+        state = State.SIGNEDIN;
+        return String.format("You've registered a new account and signed in as %s", username);
     }
 
 
 
 
-    public String login(String username, String password){
-        return "buh";
+    public String login(String username, String password) throws ResponseException {
+        assertSignedOut();
+        this.authData = facade.login(username, password);
+        this.username = username;
+        state = State.SIGNEDIN;
+        return String.format("You're signed in as %s", username);
     }
 
 
-    public String logout(){
-        return "buh";
+    public String logout() throws ResponseException{
+        assertSignedIn();
+        facade.logout(authData.authToken());
+        state = State.SIGNEDOUT;
+        return String.format("%s has logged out", username);
     }
 
 
@@ -132,6 +148,11 @@ public class ClientUI {
                 """;
     }
 
+    public String clear() throws ResponseException {
+        facade.clear();
+        return "Databases cleared";
+    }
+
 
     private void printPrompt() {
         if (state == State.SIGNEDOUT){
@@ -145,7 +166,7 @@ public class ClientUI {
 
     private void assertSignedIn() throws ResponseException {
         if (state == State.SIGNEDOUT) {
-            throw new ResponseException(401, "You must sign in");
+            throw new ResponseException(401, "You must sign in before performing that operation");
         }
     }
 
