@@ -136,7 +136,7 @@ public class Server {
     }
 
 
-    private void clear(Context ctx) throws DataAccessException {
+    public void clear(Context ctx) throws DataAccessException {
         Gson gson = new Gson();
         try{
             userService.clear();
@@ -148,6 +148,12 @@ public class Server {
         catch(DataAccessException e){
             sendErrorToClient(ctx, 500, e.getMessage());
         }
+    }
+
+    public void clearWithoutContext() throws DataAccessException {//FIXME - add tests for this to keep coverage up
+        Gson gson = new Gson();
+            userService.clear();
+            gameService.clear();
     }
 
 

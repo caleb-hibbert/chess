@@ -13,8 +13,6 @@ public class PreLogin {
     public PreLogin(ServerFacade facade){
         this.facade = facade;
         this.scanner = new Scanner(System.in);
-
-
     }
 
     public void run(){
@@ -80,7 +78,7 @@ public class PreLogin {
 
     private void assertSignedIn() throws ResponseException {
         if (state == State.SIGNEDOUT) {
-            throw new ResponseException(ResponseException.Code.ClientError, "You must sign in");
+            throw new ResponseException(401, "You must sign in");
         }
     }
 

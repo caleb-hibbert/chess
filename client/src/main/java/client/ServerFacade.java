@@ -19,14 +19,14 @@ import model.JoinGameRequest;
 
 public class ServerFacade {
 
-    private int port;
+    //private int port;
     private HttpClient client = HttpClient.newHttpClient();
     private String serverUrl;
     private Gson gson;
 
 
-    ServerFacade(int port) throws Exception {
-            this.port = port;
+    public ServerFacade(int port) {
+            //this.port = port;
             this.serverUrl = "http://localhost:" + port;
             this.client = HttpClient.newHttpClient();
             this.gson = new Gson();
@@ -69,7 +69,7 @@ public class ServerFacade {
         var response = sendRequest(request);
         var result = handleResponse(response, CreateGameResult.class);
         if (result == null){
-            throw new ResponseException(ResponseException.Code.ServerError, "Create game returned an empty response");
+            throw new ResponseException(500, "Create game returned an empty response");
         }
         return result.gameID();
     }// javalin.post("/game", this::createGame);
@@ -135,7 +135,7 @@ public class ServerFacade {
             return client.send(request, BodyHandlers.ofString());
         }
         catch (Exception ex) {
-            throw new ResponseException(ResponseException.Code.ServerError, ex.getMessage());
+            throw new ResponseException(500, ex.getMessage());
         }
     }
 
@@ -145,10 +145,10 @@ public class ServerFacade {
         if (!isSuccessful(status)) {
             var body = response.body();
             if (body != null) {
-                throw ResponseException.fromJson(body);
+                throw ResponseException.fromJson(body, status);
             }
 
-            throw new ResponseException(ResponseException.fromHttpStatusCode(status), "other failure: " + status);
+            throw new ResponseException(status, "other failure: " + status);
         }
 
         if (responseClass != null) {

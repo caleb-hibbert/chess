@@ -1,32 +1,93 @@
 import client.ServerFacade;
+import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
+import dataaccess.GameDAO;
+import dataaccess.UserDAO;
 import dataaccess.sql.MySqlAuthDAO;
 import dataaccess.sql.MySqlUserDAO;
+import dataaccess.sql.MySqlGameDAO;
 import exception.ResponseException;
 import org.junit.jupiter.api.*;
 import server.Server;
+import service.AlreadyTakenException;
 import service.UserService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import io.javalin.http.Context;
 
 
 public class ServerFacadeTests {
 
     private static Server server;
-    private ServerFacade facade;
+    private static ServerFacade facade;
+    private int port;
+
 
     @BeforeAll
-    public static void init() {
+    public static void init(){
         server = new Server();
         var port = server.run(0);
+        var url = "http://localhost:" + port;
         System.out.println("Started test HTTP server on " + port);
-        this.facade = new TestServerFacade("localhost", Integer.toString(port));
-
+        facade = new ServerFacade(port);
     }
 
 
     @BeforeEach
     void initializeTests() throws DataAccessException, ResponseException {
-        facade.clear();
+        server.clearWithoutContext();
     }
+
+
+    @Test
+    void registerSuccess() throws Exception {
+        var authData = facade.register("caleb", "mypassword", "caleb@byu.edu");
+        assertNotNull(authData.authToken());
+        assertEquals("caleb", authData.username());
+    }
+
+
+    @Test
+    void registerFailure() throws Exception {
+        facade.register("caleb", "mypassword", "caleb@byu.edu");
+        assertThrows(ResponseException.class, () ->{
+            facade.register("caleb", "mypassword", "caleb@byu.edu");
+        });
+
+        assertThrows(ResponseException.class, () ->{
+            facade.register("", "mypassword", "caleb@byu.edu");
+        });
+        assertThrows(ResponseException.class, () ->{
+            facade.register("caleb", "", "caleb@byu.edu");
+        });
+        assertThrows(ResponseException.class, () ->{
+            facade.register("caleb", "mypassword", "");
+        });
+    }
+
+
+    @Test
+    void loginSuccess() throws Exception {
+        var authData = facade.register("caleb", "mypassword", "caleb@byu.edu");
+        assertDoesNotThrow(() -> facade.login("caleb", "mypassword"));
+    }
+
+
+    @Test
+    void loginFailure() throws Exception {
+        var authData = facade.register("caleb", "mypassword", "caleb@byu.edu");
+        assertThrows(ResponseException.class, () ->{
+            facade.login("caleb", "badpassword");
+        });
+    }
+
+
+
+
+
+
+
 
     @AfterAll
     static void stopServer() {
