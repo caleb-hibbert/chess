@@ -10,8 +10,11 @@ import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.net.http.*;
+
 import exception.ResponseException;
-import model.LoginResult;
+import model.GetGamesRequest;
+import model.GetGamesResult;
+import model.JoinGameRequest;
 
 
 public class ServerFacade {
@@ -69,15 +72,38 @@ public class ServerFacade {
             throw new ResponseException(ResponseException.Code.ServerError, "Create game returned an empty response");
         }
         return result.gameID();
-
     }// javalin.post("/game", this::createGame);
 
 
+    public GetGamesResult getGames(String authToken) throws ResponseException{
+        var requestData = new GetGamesRequest(authToken);
+        var request = buildRequest("GET", "/game", requestData);
+        var response = sendRequest(request);
+        return handleResponse(response, GetGamesResult.class);
+    }// javalin.get("/game", this::getGames);
+
+
+    public void joinGame(String authToken, String playerColor, int gameID) throws ResponseException{
+        var requestData = new JoinGameRequest(authToken, playerColor, gameID);
+        var request = buildRequest("PUT", "/game", requestData);
+        var response = sendRequest(request);
+        handleResponse(response, null);
+    }// javalin.put("/game", this::joinGame);
+
+
+    public void clear() throws ResponseException{
+        var request = buildRequest("DELETE", "/db", null);
+        var response = sendRequest(request);
+        handleResponse(response, null);
+    }// javalin.delete("/db", this::clear);
 
 
 
-// javalin.get("/game", this::getGames);
-// javalin.put("/game", this::joinGame);
+
+
+
+
+
 
 
 

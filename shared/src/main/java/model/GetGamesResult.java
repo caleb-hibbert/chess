@@ -1,10 +1,6 @@
-package service;
-
-import chess.ChessGame;
-import model.GameData;
+package model;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public record GetGamesResult(ArrayList<GameData> games) {
 }
