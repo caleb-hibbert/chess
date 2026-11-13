@@ -35,13 +35,13 @@ public class ServerFacadeTests {
 
 
     @BeforeEach
-    void initializeTests() throws DataAccessException, ResponseException {
+    void initializeTests() throws DataAccessException {
         server.clearWithoutContext();
     }
 
 
     @Test
-    void registerSuccess() throws Exception {
+    void registerSuccess() throws ResponseException {
         var authData = facade.register("caleb", "mypassword", "caleb@byu.edu");
 
         assertNotNull(authData.authToken());
@@ -50,7 +50,7 @@ public class ServerFacadeTests {
 
 
     @Test
-    void registerFailure() throws Exception {
+    void registerFailure() throws ResponseException {
         facade.register("caleb", "mypassword", "caleb@byu.edu");
 
         assertThrows(ResponseException.class, () ->{
@@ -70,7 +70,7 @@ public class ServerFacadeTests {
 
 
     @Test
-    void loginSuccess() throws Exception {
+    void loginSuccess() throws ResponseException {
         var authData = facade.register("caleb", "mypassword", "caleb@byu.edu");
 
         assertDoesNotThrow(() -> facade.login("caleb", "mypassword"));
@@ -78,7 +78,7 @@ public class ServerFacadeTests {
 
 
     @Test
-    void loginFailure() throws Exception {
+    void loginFailure() throws ResponseException {
         var authData = facade.register("caleb", "mypassword", "caleb@byu.edu");
 
         assertThrows(ResponseException.class, () ->{
@@ -88,7 +88,7 @@ public class ServerFacadeTests {
 
 
     @Test
-    void logoutSuccess() throws Exception {
+    void logoutSuccess() throws ResponseException {
         var authData = facade.register("caleb", "mypassword", "caleb@byu.edu");
 
         assertDoesNotThrow(() -> facade.logout(authData.authToken()));
@@ -98,10 +98,38 @@ public class ServerFacadeTests {
     }
 
 
-    
+    @Test
+    void createGameSuccess() throws ResponseException {
+        var authData = facade.register("caleb", "mypassword", "caleb@byu.edu");
+
+        assertDoesNotThrow(() -> facade.createGame("testGame", authData.authToken()));
+    }
 
 
+    @Test
+    void createGameFailure() throws ResponseException {
+        assertThrows(ResponseException.class, () ->{
+            facade.createGame("testGame", "badAuthToken");
+        });
+    }
 
+
+    @Test
+    void getGamesSuccess() throws ResponseException {
+        var authData = facade.register("caleb", "mypassword", "caleb@byu.edu");
+
+        assertDoesNotThrow(() -> facade.getGames(authData.authToken()));
+        facade.createGame("testGame", authData.authToken());
+        assertEquals(1, facade.getGames(authData.authToken()).games().size());
+    }
+
+
+    @Test
+    void getGamesFailure() throws ResponseException {
+        assertThrows(ResponseException.class, () ->{
+            facade.getGames("badAuthToken");
+        });
+    }
 
 
 
