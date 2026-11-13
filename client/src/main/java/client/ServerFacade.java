@@ -40,7 +40,7 @@ public class ServerFacade {
 //                .header("Content-Type", "application/json")
 //                .POST(HttpRequest.BodyPublisher.ofString(gson.toJson(requestData)));
 
-        var request = buildRequest("POST", "/user", requestData);
+        var request = buildRequest("POST", "/user", requestData, null);
         var response = sendRequest(request);
         return handleResponse(response, AuthData.class);
     }// javalin.post("/user", this::register);
@@ -49,7 +49,7 @@ public class ServerFacade {
 
     public AuthData login(String username, String password) throws ResponseException{
         var requestData = new LoginRequest(username, password);
-        var request = buildRequest("POST", "/session", requestData);
+        var request = buildRequest("POST", "/session", requestData, null);
         var response = sendRequest(request);
         return handleResponse(response, AuthData.class);
     }// javalin.post("/session", this::login);
@@ -57,7 +57,7 @@ public class ServerFacade {
 
     public void logout(String authToken) throws ResponseException {
         var requestData = new LogoutRequest(authToken);
-        var request = buildRequest("DELETE", "/session", null);
+        var request = buildRequest("DELETE", "/session", null, authToken);
         var response = sendRequest(request);
         handleResponse(response, null);
     }// javalin.delete("/session", this::logout);
@@ -65,7 +65,7 @@ public class ServerFacade {
 
     public int createGame(String gameName, String authToken) throws ResponseException{
         var requestData = new CreateGameRequest(gameName, authToken);
-        var request = buildRequest("POST", "/game", requestData);
+        var request = buildRequest("POST", "/game", requestData, authToken);
         var response = sendRequest(request);
         var result = handleResponse(response, CreateGameResult.class);
         if (result == null){
@@ -77,7 +77,7 @@ public class ServerFacade {
 
     public GetGamesResult getGames(String authToken) throws ResponseException{
         var requestData = new GetGamesRequest(authToken);
-        var request = buildRequest("GET", "/game", requestData);
+        var request = buildRequest("GET", "/game", requestData, authToken);
         var response = sendRequest(request);
         return handleResponse(response, GetGamesResult.class);
     }// javalin.get("/game", this::getGames);
@@ -85,14 +85,14 @@ public class ServerFacade {
 
     public void joinGame(String authToken, String playerColor, int gameID) throws ResponseException{
         var requestData = new JoinGameRequest(authToken, playerColor, gameID);
-        var request = buildRequest("PUT", "/game", requestData);
+        var request = buildRequest("PUT", "/game", requestData, authToken);
         var response = sendRequest(request);
         handleResponse(response, null);
     }// javalin.put("/game", this::joinGame);
 
 
     public void clear() throws ResponseException{
-        var request = buildRequest("DELETE", "/db", null);
+        var request = buildRequest("DELETE", "/db", null, null);
         var response = sendRequest(request);
         handleResponse(response, null);
     }// javalin.delete("/db", this::clear);
@@ -110,13 +110,18 @@ public class ServerFacade {
 
 
 
-    private HttpRequest buildRequest(String method, String path, Object body) {
+    private HttpRequest buildRequest(String method, String path, Object body, String authToken) {
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(serverUrl + path))
                 .method(method, makeRequestBody(body));
         if (body != null) {
             request.setHeader("Content-Type", "application/json");
         }
+
+        if (authToken != null) {
+            request.header("authorization", authToken);
+        }
+
         return request.build();
     }
 

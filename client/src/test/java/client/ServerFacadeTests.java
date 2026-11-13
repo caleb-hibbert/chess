@@ -43,6 +43,7 @@ public class ServerFacadeTests {
     @Test
     void registerSuccess() throws Exception {
         var authData = facade.register("caleb", "mypassword", "caleb@byu.edu");
+
         assertNotNull(authData.authToken());
         assertEquals("caleb", authData.username());
     }
@@ -51,6 +52,7 @@ public class ServerFacadeTests {
     @Test
     void registerFailure() throws Exception {
         facade.register("caleb", "mypassword", "caleb@byu.edu");
+
         assertThrows(ResponseException.class, () ->{
             facade.register("caleb", "mypassword", "caleb@byu.edu");
         });
@@ -70,6 +72,7 @@ public class ServerFacadeTests {
     @Test
     void loginSuccess() throws Exception {
         var authData = facade.register("caleb", "mypassword", "caleb@byu.edu");
+
         assertDoesNotThrow(() -> facade.login("caleb", "mypassword"));
     }
 
@@ -77,10 +80,25 @@ public class ServerFacadeTests {
     @Test
     void loginFailure() throws Exception {
         var authData = facade.register("caleb", "mypassword", "caleb@byu.edu");
+
         assertThrows(ResponseException.class, () ->{
             facade.login("caleb", "badpassword");
         });
     }
+
+
+    @Test
+    void logoutSuccess() throws Exception {
+        var authData = facade.register("caleb", "mypassword", "caleb@byu.edu");
+
+        assertDoesNotThrow(() -> facade.logout(authData.authToken()));
+        assertThrows(ResponseException.class, () ->{
+            facade.logout(authData.authToken());
+        });
+    }
+
+
+    
 
 
 
