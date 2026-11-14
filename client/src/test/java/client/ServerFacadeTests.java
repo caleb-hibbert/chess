@@ -7,6 +7,7 @@ import dataaccess.sql.MySqlAuthDAO;
 import dataaccess.sql.MySqlUserDAO;
 import dataaccess.sql.MySqlGameDAO;
 import exception.ResponseException;
+import model.AuthData;
 import model.CreateGameResult;
 import org.junit.jupiter.api.*;
 import server.Server;
@@ -121,7 +122,7 @@ public class ServerFacadeTests {
 
         assertDoesNotThrow(() -> facade.getGames(authData.authToken()));
         facade.createGame("testGame", authData.authToken());
-        assertEquals(1, facade.getGames(authData.authToken()).games().size());
+        assertEquals(1, facade.getGames(authData.authToken()).size());
     }
 
 

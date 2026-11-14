@@ -3,9 +3,11 @@ import client.ServerFacade;
 import client.State;
 import exception.ResponseException;
 import model.AuthData;
+import model.GameData;
+import model.UserData;
 
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
+
 import static ui.EscapeSequences.*;
 
 
@@ -67,15 +69,39 @@ public class ClientUI {
                 }
                 case "login" -> {
                     if (params.length != 2){
-                        yield "Incorrect number of arguments entered for login - use the format \"Login <USERNAME> <PASSWORD>\"";
+                        yield "Incorrect number of arguments entered for Login - use the format \"Login <USERNAME> <PASSWORD>\"";
                     }
                     yield login(params[0], params[1]);
                 }
                 case "logout" -> {
                     if (params.length != 0){
-                        yield "Incorrect number of arguments entered for login - use the format \"Logout\"";
+                        yield "Incorrect number of arguments entered for Logout - use the format \"Logout\"";
                     }
                     yield logout();
+                }
+                case "create" -> {
+                    if (params.length != 1){
+                        yield "Incorrect number of arguments entered for Create - use the format \"Create <GAME_NAME>\"";
+                    }
+                    yield createGame(params[0]);
+                }
+                case "list" -> {
+                    if (params.length != 0){
+                        yield "Incorrect number of arguments entered for List - use the format \"List\"";
+                    }
+                    yield listGames();
+                }
+                case "join" -> {
+                    if (params.length != 2){
+                        yield "Incorrect number of arguments entered for Join - use the format \"Join <WHITE|BLACK> <GAME_LIST_NUMBER>\"";
+                    }
+                    yield joinGame(params[0].toUpperCase(), Integer.parseInt(params[1]));
+                }
+                case "observe" -> {
+                    if (params.length != 1){
+                        yield "Incorrect number of arguments entered for Observe - use the format \"Observe <GAME_LIST_NUMBER>\"";
+                    }
+                    yield observeGame(Integer.parseInt(params[0]));
                 }
 
                 case "help" -> help();
@@ -89,11 +115,6 @@ public class ClientUI {
             return ex.getMessage();
         }
     }
-
-
-
-
-
 
 
     public String register(String username, String password, String email) throws ResponseException {
@@ -113,6 +134,7 @@ public class ClientUI {
         this.username = username;
         state = State.SIGNEDIN;
         return String.format("You're signed in as %s", username);
+
     }
 
 
@@ -124,7 +146,50 @@ public class ClientUI {
     }
 
 
+    public String createGame(String gameName) throws ResponseException{
+        assertSignedIn();
+        int gameID = facade.createGame(gameName, authData.authToken());
+        return String.format("New game created with ID %d", gameID);
+    }
 
+
+    public String listGames() throws ResponseException{
+        assertSignedIn();
+        Map<Integer, GameData> mapOfGames = new HashMap<>();
+
+//        List<GameData> listOfGames = facade.getGames(authData.authToken());
+//        StringBuilder formattedListOfGames = new StringBuilder();
+
+//        for (GameData game : listOfGames){
+//            formattedListOfGames.append("f" + game);
+//            formattedListOfGames.append("\n");
+//        }
+
+//        for (int i = 0; i < listOfGames.size(); i++){
+//            formattedListOfGames.append(i+1).append(". ").append(listOfGames.get(i)).append("\n");
+//        }//TODO - would a map work better here?
+
+        return String.format("List of chess games:\n%s", formattedListOfGames);
+    }
+
+
+    public String joinGame(String playerColor, int gameListID) throws ResponseException{
+        assertSignedIn();
+        List<GameData> listOfGames = facade.getGames(authData.authToken());
+        facade.joinGame(authData.authToken(), playerColor, );
+
+        facade.joinGame(authData.authToken(), playerColor, gameListID);
+        return String.format("Joined the game with ID %d on the %s team", gameListID, playerColor );
+
+    }
+
+
+    public String observeGame(int gameListID) throws ResponseException{
+        assertSignedIn();
+        facade.observeGame(authData.authToken(), gameListID);
+        return String.format("Now observing the game with ID %d", gameListID);
+
+    }
 
 
     public String help() {
@@ -141,14 +206,17 @@ public class ClientUI {
         return """
                 Logout - Sign out of the Chess program
                 List - List all chess games
-                Create - Create a new chess game
-                Join <WHITE|BLACK> <GAME ID> - Join a specific chess game
+                Create <GAME_NAME> - Create a new chess game
+                Join <WHITE|BLACK> <GAME_LIST_NUMBER> - Join a specific chess game
+                Observe <GAME_LIST_NUMBER> - Observe a specific chess game
                 Help - Get help with possible commands
                 Quit - Quit the chess program
+                
+                Select an option:
                 """;
     }
 
-    public String clear() throws ResponseException {
+    public String clear() throws ResponseException {//TODO -For testing, remove this for final submission
         facade.clear();
         return "Databases cleared";
     }

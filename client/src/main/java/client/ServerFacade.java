@@ -10,6 +10,7 @@ import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.net.http.*;
+import java.util.List;
 
 import exception.ResponseException;
 import model.GetGamesRequest;
@@ -75,11 +76,17 @@ public class ServerFacade {
     }// javalin.post("/game", this::createGame);
 
 
-    public GetGamesResult getGames(String authToken) throws ResponseException{
+    public List<GameData> getGames(String authToken) throws ResponseException{
         var requestData = new GetGamesRequest(authToken);
         var request = buildRequest("GET", "/game", requestData, authToken);
         var response = sendRequest(request);
-        return handleResponse(response, GetGamesResult.class);
+        var result = handleResponse(response, GetGamesResult.class);
+        if (result == null){
+            throw new ResponseException(500, "Create game returned an empty response");
+        }
+        return result.games();
+
+        //return handleResponse(response, GetGamesResult.class).games();
     }// javalin.get("/game", this::getGames);
 
 
@@ -89,6 +96,14 @@ public class ServerFacade {
         var response = sendRequest(request);
         handleResponse(response, null);
     }// javalin.put("/game", this::joinGame);
+
+
+    public void observeGame(String authToken, int gameID) throws ResponseException{
+
+    }
+
+
+
 
 
     public void clear() throws ResponseException{
