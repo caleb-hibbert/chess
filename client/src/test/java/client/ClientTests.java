@@ -45,9 +45,17 @@ public class ClientTests {
 
     @Test
     void registerFailure() throws ResponseException{
+        String result = clientUI.eval("register caleb mypassword caleb@byu.edu extrafield");
+        assertTrue(result.contains("Incorrect number of arguments entered for Register - use the format"));
+        result = clientUI.eval("register notenougharguments");
+        assertTrue(result.contains("Incorrect number of arguments entered for Register - use the format"));
+
+
         clientUI.eval("register caleb, mypassword, caleb@byu.edu");
-        String result = clientUI.eval("register caleb, mypassword, caleb@byu.edu");
+        result = clientUI.eval("register caleb, mypassword, caleb@byu.edu");
         assertTrue(result.contains("You need to log out before performing that operation"));
+
+
     }
 
 
@@ -67,8 +75,22 @@ public class ClientTests {
 
 
     @Test
-    void loginFailure() throws ResponseException{
+    void loginMessageSuccess() throws ResponseException{
+        clientUI.eval("register caleb mypassword caleb@byu.edu");
+        clientUI.eval("logout");
         String result = clientUI.eval("login caleb mypassword");
+        assertTrue(result.contains("You're signed in as"));
+    }
+
+
+    @Test
+    void loginFailure() throws ResponseException{
+        String result = clientUI.eval("login notenougharguments");
+        assertTrue(result.contains("Incorrect number of arguments entered for Login - use the format"));
+        result = clientUI.eval("login");
+        assertTrue(result.contains("Incorrect number of arguments entered for Login - use the format"));
+
+        result = clientUI.eval("login caleb mypassword");
         assertTrue(result.contains("Error: unauthorized"));
         clientUI.eval("register caleb, mypassword, caleb@byu.edu");
         result = clientUI.eval("register caleb, mypassword, caleb@byu.edu");
@@ -77,16 +99,75 @@ public class ClientTests {
 
 
     @Test
-    void helpSuccess() throws ResponseException {
+    void logoutSuccess() throws ResponseException{
+        clientUI.eval("register caleb mypassword caleb@byu.edu");
+        clientUI.eval("login caleb mypassword");
+        String result = clientUI.eval("logout");
+        assertTrue(result.contains("caleb has logged out"));
+        result = clientUI.eval("list");
+        assertTrue(result.contains("You must sign in before performing that operation"));
+    }
+
+
+    @Test
+    void logoutFailure() throws ResponseException{
+        String result = clientUI.eval("logout toomanyargs");
+        assertTrue(result.contains("Incorrect number of arguments entered for Logout - use the format"));
+        result = clientUI.eval("logout");
+        assertTrue(result.contains("You must sign in before performing that operation"));
+    }
+
+
+
+
+    @Test
+    void createGameSuccess() throws ResponseException{
+
+    }
+
+
+    @Test
+    void createGameFailure() throws ResponseException{
+
+    }
+
+
+
+
+
+
+
+
+    @Test
+    void evalBadInputDefaultToHelp() throws ResponseException{
+        String result = clientUI.eval("this is an invalid input");
+        assertTrue(result.contains("Select an option:"));
+    }
+
+
+    @Test
+    void helpSuccessPreLogin() throws ResponseException {
         String result = clientUI.eval("help");
         assertTrue(result.contains("Register"));
         assertTrue(result.contains("Login"));
         assertTrue(result.contains("Help"));
         assertTrue(result.contains("Select an option:"));
+    }
 
-        //register, then check others
 
+    @Test
+    void helpSuccessPostLogin() throws ResponseException {
+        clientUI.eval("register caleb mypassword caleb@byu.edu");
+        clientUI.eval("register caleb, mypassword, caleb@byu.edu");
 
+        String result = clientUI.eval("help");
+        assertTrue(result.contains("Logout"));
+        assertTrue(result.contains("List"));
+        assertTrue(result.contains("Create"));
+        assertTrue(result.contains("Join"));
+        assertTrue(result.contains("Observe"));
+        assertTrue(result.contains("Help"));
+        assertTrue(result.contains("Select an option:"));
     }
 
 

@@ -63,7 +63,7 @@ public class ClientUI {
             return switch (operation){
                 case "register" -> {
                     if (params.length != 3){
-                        yield "Incorrect number of arguments entered for register - use the format \"Register <USERNAME> <PASSWORD> <EMAIL>\"";
+                        yield "Incorrect number of arguments entered for Register - use the format \"Register <USERNAME> <PASSWORD> <EMAIL>\"";
                     }
                     yield register(params[0], params[1], params[2]);
                 }
