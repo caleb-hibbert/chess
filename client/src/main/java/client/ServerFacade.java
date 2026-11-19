@@ -113,18 +113,6 @@ public class ServerFacade {
     }// javalin.delete("/db", this::clear);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     private HttpRequest buildRequest(String method, String path, Object body, String authToken) {
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(serverUrl + path))

@@ -155,19 +155,19 @@ public class ClientUI {
 
     public String listGames() throws ResponseException{
         assertSignedIn();
-        Map<Integer, GameData> mapOfGames = new HashMap<>();
+        //Map<Integer, GameData> mapOfGames = new HashMap<>();
 
-//        List<GameData> listOfGames = facade.getGames(authData.authToken());
-//        StringBuilder formattedListOfGames = new StringBuilder();
+        List<GameData> listOfGames = facade.getGames(authData.authToken());
+        StringBuilder formattedListOfGames = new StringBuilder();
 
 //        for (GameData game : listOfGames){
 //            formattedListOfGames.append("f" + game);
 //            formattedListOfGames.append("\n");
 //        }
 
-//        for (int i = 0; i < listOfGames.size(); i++){
-//            formattedListOfGames.append(i+1).append(". ").append(listOfGames.get(i)).append("\n");
-//        }//TODO - would a map work better here?
+        for (int i = 0; i < listOfGames.size(); i++){
+            formattedListOfGames.append(i+1).append(". ").append(listOfGames.get(i)).append("\n");
+        }//would a map work better here?
 
         return String.format("List of chess games:\n%s", formattedListOfGames);
     }
@@ -176,9 +176,8 @@ public class ClientUI {
     public String joinGame(String playerColor, int gameListID) throws ResponseException{
         assertSignedIn();
         List<GameData> listOfGames = facade.getGames(authData.authToken());
-        facade.joinGame(authData.authToken(), playerColor, );
+        facade.joinGame(authData.authToken(), playerColor, listOfGames.get(gameListID-1).gameID());
 
-        facade.joinGame(authData.authToken(), playerColor, gameListID);
         return String.format("Joined the game with ID %d on the %s team", gameListID, playerColor );
 
     }
@@ -218,6 +217,9 @@ public class ClientUI {
 
     public String clear() throws ResponseException {//TODO -For testing, remove this for final submission
         facade.clear();
+        this.username = null;
+        this.authData = null;
+        this.state = State.SIGNEDOUT;
         return "Databases cleared";
     }
 
@@ -232,17 +234,19 @@ public class ClientUI {
     }
 
 
-    private void assertSignedIn() throws ResponseException {
+    public void assertSignedIn() throws ResponseException {
         if (state == State.SIGNEDOUT) {
             throw new ResponseException(401, "You must sign in before performing that operation");
         }
     }
 
 
-    private void assertSignedOut() throws ResponseException {
+    public void assertSignedOut() throws ResponseException {
         if (state == State.SIGNEDIN) {
             throw new ResponseException(403, "You need to log out before performing that operation");
         }
     }
+
+
 
 }
