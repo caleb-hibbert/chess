@@ -1,4 +1,7 @@
 package ui;
+import chess.ChessBoard;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import client.ServerFacade;
 import client.State;
 import exception.ResponseException;
@@ -27,7 +30,10 @@ public class ClientUI {
 
     public void run(){
         System.out.println("\nWelcome to 240 chess. Type Help to get started.\n");
-        System.out.println(help());
+        authData = new AuthData("97763078-a2d6-4603-b987-2c34dd13501d", "a");
+        username = "a";
+        printBoard("w", 1);
+        //System.out.println(help());
         Scanner scanner = new Scanner(System.in);
         var result = "";
 
@@ -155,15 +161,9 @@ public class ClientUI {
 
     public String listGames() throws ResponseException{
         assertSignedIn();
-        //Map<Integer, GameData> mapOfGames = new HashMap<>();
-
         List<GameData> listOfGames = facade.getGames(authData.authToken());
         StringBuilder formattedListOfGames = new StringBuilder();
 
-//        for (GameData game : listOfGames){
-//            formattedListOfGames.append("f" + game);
-//            formattedListOfGames.append("\n");
-//        }
 
         for (int i = 0; i < listOfGames.size(); i++){
             formattedListOfGames.append(i+1).append(". ").append(listOfGames.get(i)).append("\n");
@@ -239,6 +239,116 @@ public class ClientUI {
         this.state = State.SIGNEDOUT;
         return "Databases cleared";
     }
+
+
+
+    void printBoard(String teamColor, int gameListID){
+        System.out.print(SET_TEXT_COLOR_BLACK);
+        List<GameData> listOfGames = new ArrayList<>();
+        try{
+            listOfGames = facade.getGames(authData.authToken());
+        }
+        catch (ResponseException ex){
+            System.out.println("Unable to print the requested game, make sure the list ID you selected was valid and formatted properly");
+        }
+        ChessBoard board = listOfGames.get(gameListID-1).game().getBoard();
+        printTopOrBottomRow("w");
+        printBoardSquaresOnly("w", board);
+        printTopOrBottomRow("w");
+
+    }
+
+
+    void printBoardSquaresOnly(String teamColor, ChessBoard board){
+        if (teamColor.equals("b")){
+            for (int i = 0; i < 4; i++){
+                printBoardSquaresRow("b", board, 2*i);
+                printBoardSquaresRow("w", board, 2*i+1);
+            }
+        }
+        else{
+            for (int i = 0; i < 4; i++){
+                printBoardSquaresRow("w", board, 2*i);
+                printBoardSquaresRow("b", board, 2*i+1);
+            }
+        }
+
+
+
+
+
+
+    }
+
+
+    void printTopOrBottomRow(String teamColor) {
+        int SQUARE_WIDTH = 4;
+        System.out.print(SET_BG_COLOR_BLUE);
+
+        if (teamColor.equals("b")){
+            System.out.print(" h   g   f  e   d   c  b   a ");
+        }
+        else{
+            System.out.print(" a   b   c  d   e   f  g   h ");
+        }
+
+        System.out.print(RESET_BG_COLOR);
+        System.out.println();
+    }
+
+
+
+    void printBoardSquaresRow(String teamColor, ChessBoard board, int rowNumber){
+        String boardColor1 = SET_BG_COLOR_WHITE;
+        String boardColor2 = SET_BG_COLOR_LIGHT_GREY;
+
+        if (teamColor.equals("b")){
+            boardColor1 = SET_BG_COLOR_LIGHT_GREY;
+            boardColor2 = SET_BG_COLOR_WHITE;
+        }
+
+        for (int i = 0; i < 8; i++){
+            String pieceSymbol = EMPTY;
+            if (i%2 == 0){
+                ChessPiece piece = board.getPiece(new ChessPosition(rowNumber+1,i+1));
+
+                if (piece != null){
+                    String pieceString = piece.getTeamColor() + "_" + piece.getPieceType().toString();
+                    pieceSymbol = getPieceSymbol(pieceString);
+                }
+
+                System.out.print(boardColor1 + pieceSymbol);
+            }
+            else{
+                System.out.print(boardColor2 + EMPTY);
+            }
+        }
+        System.out.print(RESET_BG_COLOR);
+        System.out.println();
+    }
+
+
+
+    private String getPieceSymbol(String pieceType){
+        return switch (pieceType){
+            case "WHITE_KING" -> WHITE_KING;
+            case "WHITE_QUEEN" -> EscapeSequences.WHITE_QUEEN;
+            case "WHITE_BISHOP" -> EscapeSequences.WHITE_BISHOP;
+            case "WHITE_KNIGHT" -> EscapeSequences.WHITE_KNIGHT;
+            case "WHITE_ROOK" -> EscapeSequences.WHITE_ROOK;
+            case "WHITE_PAWN" -> EscapeSequences.WHITE_PAWN;
+
+            case "BLACK_KING" -> EscapeSequences.BLACK_KING;
+            case "BLACK_QUEEN" -> EscapeSequences.BLACK_QUEEN;
+            case "BLACK_BISHOP" -> EscapeSequences.BLACK_BISHOP;
+            case "BLACK_KNIGHT" -> EscapeSequences.BLACK_KNIGHT;
+            case "BLACK_ROOK" -> EscapeSequences.BLACK_ROOK;
+            case "BLACK_PAWN" -> EscapeSequences.BLACK_PAWN;
+
+            default -> EMPTY;
+        };
+    }
+
 
 
     private void printPrompt() {
