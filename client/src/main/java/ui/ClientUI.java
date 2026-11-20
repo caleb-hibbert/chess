@@ -176,18 +176,35 @@ public class ClientUI {
     public String joinGame(String playerColor, int gameListID) throws ResponseException{
         assertSignedIn();
         List<GameData> listOfGames = facade.getGames(authData.authToken());
-        facade.joinGame(authData.authToken(), playerColor, listOfGames.get(gameListID-1).gameID());
+        try{
+            facade.joinGame(authData.authToken(), playerColor, listOfGames.get(gameListID-1).gameID());
 
-        return String.format("Joined the game with ID %d on the %s team", gameListID, playerColor );
+        }
+        catch(IndexOutOfBoundsException exception){
+            return String.format(
+                    "The game you tried to join (%d) doesn't exist." +
+                            " Valid game numbers currently range from 1 to %d", gameListID, listOfGames.size());
+
+        }
+
+        return String.format("Joined the game with ID %d on the %s team", gameListID, playerColor);
 
     }
 
 
     public String observeGame(int gameListID) throws ResponseException{
         assertSignedIn();
-        facade.observeGame(authData.authToken(), gameListID);
-        return String.format("Now observing the game with ID %d", gameListID);
+        List<GameData> listOfGames = facade.getGames(authData.authToken());
+        try{
+            facade.observeGame(authData.authToken(), gameListID);
 
+        }
+        catch (IndexOutOfBoundsException exception){
+            return String.format(
+                    "The game you tried to observe (%d) doesn't exist." +
+                            " Valid game numbers currently range from 1 to %d", gameListID, listOfGames.size());
+        }
+        return String.format("Now observing the game with ID %d", gameListID);
     }
 
 
@@ -215,7 +232,7 @@ public class ClientUI {
                 """;
     }
 
-    public String clear() throws ResponseException {//TODO -For testing, remove this for final submission
+    public String clear() throws ResponseException {// For testing, should this be removed later?
         facade.clear();
         this.username = null;
         this.authData = null;
