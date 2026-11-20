@@ -32,7 +32,7 @@ public class ClientUI {
         System.out.println("\nWelcome to 240 chess. Type Help to get started.\n");
         authData = new AuthData("97763078-a2d6-4603-b987-2c34dd13501d", "a");
         username = "a";
-        printBoard("w", 1);
+        printBoard("b", 1);
         //System.out.println(help());
         Scanner scanner = new Scanner(System.in);
         var result = "";
@@ -252,29 +252,80 @@ public class ClientUI {
             System.out.println("Unable to print the requested game, make sure the list ID you selected was valid and formatted properly");
         }
         ChessBoard board = listOfGames.get(gameListID-1).game().getBoard();
-        printTopOrBottomRow("w");
-        printBoardSquaresOnly("w", board);
-        printTopOrBottomRow("w");
+        printTopOrBottomRow(teamColor);
+        //printBoardSquaresOnly(teamColor, board);
+        printBoardWhiteView(board);
+        printTopOrBottomRow(teamColor);
 
     }
 
 
+    void printBoardWhiteView(ChessBoard board){
+        String boardColor1 = SET_BG_COLOR_WHITE;
+        String boardColor2 = SET_BG_COLOR_LIGHT_GREY;
+    }
+
+
     void printBoardSquaresOnly(String teamColor, ChessBoard board){
-        if (teamColor.equals("b")){
+        if (teamColor.equals("w")){
             for (int i = 0; i < 4; i++){
-                printBoardSquaresRow("b", board, 2*i);
-                printBoardSquaresRow("w", board, 2*i+1);
+                printBoardSquaresRow("b", board, i*2);
+                printBoardSquaresRow("w", board, i*2+1);
             }
         }
-        else{
+        else if (teamColor.equals("b")){
             for (int i = 0; i < 4; i++){
-                printBoardSquaresRow("w", board, 2*i);
-                printBoardSquaresRow("b", board, 2*i+1);
+                printBoardSquaresRow("w", board, i*2);
+                printBoardSquaresRow("b", board, i*2+1);
             }
         }
 
+    }
 
 
+
+    void printBoardSquaresRow(String startColor, ChessBoard board, int row){
+//        String boardColor1;
+//        String boardColor2;
+//        if (startColor.equals("w")){
+//            boardColor1 = SET_BG_COLOR_WHITE;
+//            boardColor2 = SET_BG_COLOR_LIGHT_GREY;
+//            System.out.print(SET_BG_COLOR_BLUE + EMPTY);
+//            for (int i = 0; i < 8; i++){
+//                System.out.print(boardColor1 + findPieceToPrint(board, row+1, i+1));
+//            }
+//            System.out.print(SET_BG_COLOR_BLUE + EMPTY);
+//        }
+//        else if (startColor.equals("b")){
+//            boardColor1 = SET_BG_COLOR_LIGHT_GREY;
+//            boardColor2 = SET_BG_COLOR_WHITE;
+//            System.out.print(SET_BG_COLOR_BLUE + EMPTY);
+//            for (int i = 0; i < 8; i++){
+//                System.out.print(boardColor1 + findPieceToPrint(board, row+1, i*2+1));
+//            }
+//            System.out.print(SET_BG_COLOR_BLUE + EMPTY);
+//        }
+
+
+//        String boardColor1 = SET_BG_COLOR_WHITE;
+//        String boardColor2 = SET_BG_COLOR_LIGHT_GREY;
+//
+//        if (startColor.equals("b")){
+//            boardColor1 = SET_BG_COLOR_LIGHT_GREY;
+//            boardColor2 = SET_BG_COLOR_WHITE;
+//        }
+//        System.out.print(SET_BG_COLOR_BLUE + EMPTY);
+//        for (int i = 0; i < 8; i++){
+//            if (i%2 == 0){
+//                System.out.print(boardColor1 + findPieceToPrint(board, row+1, i+1));
+//            }
+//            else{
+//                System.out.print(boardColor2 + findPieceToPrint(board, row+1, i+1));
+//            }
+//        }
+//        System.out.print(SET_BG_COLOR_BLUE + EMPTY);
+//        System.out.print(RESET_BG_COLOR);
+//        System.out.println();
 
 
 
@@ -282,8 +333,7 @@ public class ClientUI {
 
 
     void printTopOrBottomRow(String teamColor) {
-        int SQUARE_WIDTH = 4;
-        System.out.print(SET_BG_COLOR_BLUE);
+        System.out.print(SET_BG_COLOR_BLUE + EMPTY);
 
         if (teamColor.equals("b")){
             System.out.print(" h   g   f  e   d   c  b   a ");
@@ -291,41 +341,25 @@ public class ClientUI {
         else{
             System.out.print(" a   b   c  d   e   f  g   h ");
         }
+        System.out.print(SET_BG_COLOR_BLUE + EMPTY);
 
         System.out.print(RESET_BG_COLOR);
         System.out.println();
     }
 
 
-
-    void printBoardSquaresRow(String teamColor, ChessBoard board, int rowNumber){
-        String boardColor1 = SET_BG_COLOR_WHITE;
-        String boardColor2 = SET_BG_COLOR_LIGHT_GREY;
-
-        if (teamColor.equals("b")){
-            boardColor1 = SET_BG_COLOR_LIGHT_GREY;
-            boardColor2 = SET_BG_COLOR_WHITE;
+    String findPieceToPrint(ChessBoard board, int row, int col){
+        String pieceSymbol = EMPTY;
+        ChessPiece piece = board.getPiece(new ChessPosition(row,col));
+        if (piece != null){
+            String pieceString = piece.getTeamColor() + "_" + piece.getPieceType().toString();
+            pieceSymbol = getPieceSymbol(pieceString);
         }
-
-        for (int i = 0; i < 8; i++){
-            String pieceSymbol = EMPTY;
-            if (i%2 == 0){
-                ChessPiece piece = board.getPiece(new ChessPosition(rowNumber+1,i+1));
-
-                if (piece != null){
-                    String pieceString = piece.getTeamColor() + "_" + piece.getPieceType().toString();
-                    pieceSymbol = getPieceSymbol(pieceString);
-                }
-
-                System.out.print(boardColor1 + pieceSymbol);
-            }
-            else{
-                System.out.print(boardColor2 + EMPTY);
-            }
-        }
-        System.out.print(RESET_BG_COLOR);
-        System.out.println();
+        return pieceSymbol;
     }
+
+
+
 
 
 
