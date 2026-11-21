@@ -1,5 +1,6 @@
 package ui;
 import chess.ChessBoard;
+import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import client.ServerFacade;
@@ -32,7 +33,7 @@ public class ClientUI {
         System.out.println("\nWelcome to 240 chess. Type Help to get started.\n");
         authData = new AuthData("97763078-a2d6-4603-b987-2c34dd13501d", "a");
         username = "a";
-        printBoard("b", 1);
+        printBoard("w", 1);
         //System.out.println(help());
         Scanner scanner = new Scanner(System.in);
         var result = "";
@@ -263,28 +264,57 @@ public class ClientUI {
     void printBoardWhiteView(ChessBoard board){
         String boardColor1 = SET_BG_COLOR_WHITE;
         String boardColor2 = SET_BG_COLOR_LIGHT_GREY;
+        //System.out.print(SET_BG_COLOR_BLUE + EMPTY);
+        printBoardSquaresOnly("w", board);
+        //System.out.print(SET_BG_COLOR_BLUE + EMPTY);
     }
 
 
     void printBoardSquaresOnly(String teamColor, ChessBoard board){
-        if (teamColor.equals("w")){
-            for (int i = 0; i < 4; i++){
-                printBoardSquaresRow("b", board, i*2);
-                printBoardSquaresRow("w", board, i*2+1);
+        String currentColor = SET_BG_COLOR_WHITE;
+        for (int i = 8; i > 0; i--){
+            System.out.print(SET_BG_COLOR_BLUE + EMPTY);
+            for (int j = 1; j <= 8; j++){
+                int row = i;
+                int col = j;
+                System.out.print(currentColor + findPieceToPrint(board, row, col));
+                currentColor = swapColor(currentColor);
             }
+            System.out.print(SET_BG_COLOR_BLUE + EMPTY);
+            currentColor = swapColor(currentColor);
+            System.out.print(RESET_BG_COLOR + "\n");
         }
-        else if (teamColor.equals("b")){
-            for (int i = 0; i < 4; i++){
-                printBoardSquaresRow("w", board, i*2);
-                printBoardSquaresRow("b", board, i*2+1);
-            }
-        }
-
     }
 
 
 
     void printBoardSquaresRow(String startColor, ChessBoard board, int row){
+        String boardColor1 = SET_BG_COLOR_LIGHT_GREY;
+        String boardColor2 = SET_BG_COLOR_WHITE;
+        String currentColor = SET_BG_COLOR_WHITE;
+        System.out.print(SET_BG_COLOR_BLUE + EMPTY);
+        for (int i = 0; i < 8; i++){
+            if (row % 2 == 1){// odd row, print white background
+                System.out.print(SET_BG_COLOR_WHITE + findPieceToPrint(board, row+1, i+1));
+
+            }
+            else{// even row, print gray background
+                System.out.print(SET_BG_COLOR_LIGHT_GREY + findPieceToPrint(board, row+1, i+1));
+            }
+//            if (row == 0){
+//                currentColor = SET_BG_COLOR_LIGHT_GREY;
+//            }
+//            else{
+//                currentColor = SET_BG_COLOR_WHITE;
+//            }
+        }
+
+        System.out.print(SET_BG_COLOR_BLUE + EMPTY);
+        System.out.print(RESET_BG_COLOR + EMPTY + "\n");
+
+
+
+
 //        String boardColor1;
 //        String boardColor2;
 //        if (startColor.equals("w")){
@@ -327,10 +357,19 @@ public class ClientUI {
 //        System.out.print(RESET_BG_COLOR);
 //        System.out.println();
 
-
-
     }
 
+    String swapColor(String currentColor){
+        if (currentColor.equals(SET_BG_COLOR_LIGHT_GREY)){
+            return SET_BG_COLOR_WHITE;
+        }
+        else if (currentColor.equals(SET_BG_COLOR_WHITE)){
+            return SET_BG_COLOR_LIGHT_GREY;
+        }
+        else{
+            return SET_BG_COLOR_DARK_GREEN;
+        }
+    }
 
     void printTopOrBottomRow(String teamColor) {
         System.out.print(SET_BG_COLOR_BLUE + EMPTY);
