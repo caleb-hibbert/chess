@@ -19,20 +19,9 @@ public class ResponseException extends Exception {
         this.statusCode = statusCode;
     }
 
-    public String toJson() {
-        return new Gson().toJson(Map.of("message", getMessage()));
-    }
-
     public static ResponseException fromJson(String json, int statusCode) {
         var map = new Gson().fromJson(json, HashMap.class);
         String message = map.get("message").toString();
         return new ResponseException(statusCode, message);
     }
-
-
-    public int StatusCode(){
-        return statusCode;
-    }
-
-
 }

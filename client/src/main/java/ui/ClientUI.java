@@ -29,9 +29,6 @@ public class ClientUI {
 
     public void run(){
         System.out.println("\nWelcome to 240 chess. Type Help to get started.\n");
-//        authData = new AuthData("12c4802a-0c3c-4e3c-9257-1098fe97bf0e", "a");
-//        username = "a";
-//        printBoard("WHITE", 1);
         System.out.println(help());
         Scanner scanner = new Scanner(System.in);
         var result = "";
@@ -262,9 +259,7 @@ public class ClientUI {
             for (int i = 8; i > 0; i--){
                 System.out.print(SET_BG_COLOR_BLUE + " " + i + " ");
                 for (int j = 1; j <= 8; j++){
-                    int row = i;
-                    int col = j;
-                    System.out.print(currentColor + findPieceToPrint(board, row, col));
+                    System.out.print(currentColor + findPieceToPrint(board, i, j));//row, column
                     currentColor = swapColor(currentColor);
                 }
                 System.out.print(SET_BG_COLOR_BLUE + " " + i + "  ");
@@ -277,9 +272,7 @@ public class ClientUI {
             for (int i = 1; i <= 8; i++){
                 System.out.print(SET_BG_COLOR_BLUE + " " + i + " ");
                 for (int j = 1; j <= 8; j++){
-                    int row = i;
-                    int col = j;
-                    System.out.print(currentColor + findPieceToPrint(board, row, col));
+                    System.out.print(currentColor + findPieceToPrint(board, i, j));//row, column
                     currentColor = swapColor(currentColor);
                 }
                 System.out.print(SET_BG_COLOR_BLUE + " " + i + "  ");

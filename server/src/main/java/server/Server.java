@@ -150,7 +150,7 @@ public class Server {
         }
     }
 
-    public void clearWithoutContext() throws DataAccessException {//FIXME - add tests for this to keep coverage up
+    public void clearWithoutContext() throws DataAccessException {
         Gson gson = new Gson();
             userService.clear();
             gameService.clear();
