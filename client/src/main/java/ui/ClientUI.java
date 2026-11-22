@@ -198,7 +198,7 @@ public class ClientUI {
                             " Valid game numbers currently range from 1 to %d", gameListID, listOfGames.size());
         }
         printBoard("WHITE", gameListID);
-        return String.format("Now observing the game with ID %d", gameListID);
+        return String.format("Now observing the game with list ID %d and game ID %d", gameListID, listOfGames.get(gameListID-1).gameID());
     }
 
 
@@ -254,31 +254,33 @@ public class ClientUI {
 
 
     void printBoardMainRows(String teamColor, ChessBoard board){
+        String currentColor;
+        int rowStart;
+        int rowStop;
+        int incrementDirection;
+
         if (teamColor.equals("WHITE")){
-            String currentColor = SET_BG_COLOR_WHITE;
-            for (int i = 8; i > 0; i--){
-                System.out.print(SET_BG_COLOR_BLUE + " " + i + " ");
-                for (int j = 1; j <= 8; j++){
-                    System.out.print(currentColor + findPieceToPrint(board, i, j));//row, column
-                    currentColor = swapColor(currentColor);
-                }
-                System.out.print(SET_BG_COLOR_BLUE + " " + i + "  ");
-                currentColor = swapColor(currentColor);
-                System.out.print(RESET_BG_COLOR + "\n");
-            }
+            currentColor = SET_BG_COLOR_WHITE;
+            rowStart = 8;
+            rowStop = 0;
+            incrementDirection = -1;
         }
         else{
-            String currentColor = SET_BG_COLOR_LIGHT_GREY;
-            for (int i = 1; i <= 8; i++){
-                System.out.print(SET_BG_COLOR_BLUE + " " + i + " ");
-                for (int j = 1; j <= 8; j++){
-                    System.out.print(currentColor + findPieceToPrint(board, i, j));//row, column
-                    currentColor = swapColor(currentColor);
-                }
-                System.out.print(SET_BG_COLOR_BLUE + " " + i + "  ");
+            currentColor = SET_BG_COLOR_LIGHT_GREY;
+            rowStart = 1;
+            rowStop = 8;
+            incrementDirection = 1;
+        }
+
+        for (int i = rowStart; incrementDirection == -1 ? i > rowStop: i<= rowStop; i+= incrementDirection){
+            System.out.print(SET_BG_COLOR_BLUE + " " + i + " ");
+            for (int j = 1; j <= 8; j++){
+                System.out.print(currentColor + findPieceToPrint(board, i, j));//row, column
                 currentColor = swapColor(currentColor);
-                System.out.print(RESET_BG_COLOR + "\n");
             }
+            System.out.print(SET_BG_COLOR_BLUE + " " + i + "  ");
+            currentColor = swapColor(currentColor);
+            System.out.print(RESET_BG_COLOR + "\n");
         }
     }
 
