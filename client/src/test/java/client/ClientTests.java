@@ -126,9 +126,9 @@ public class ClientTests {
     void createGameSuccess() throws ResponseException{
         clientUI.eval("register caleb mypassword caleb@byu.edu");
         String result = clientUI.eval("create mygame");
-        assertTrue(result.contains("New game created with ID"));
+        assertTrue(result.contains("New game created called"));
         result = clientUI.eval("create mygame");
-        assertTrue(result.contains("New game created with ID"));
+        assertTrue(result.contains("New game created called"));
     }
 
 
@@ -167,7 +167,7 @@ public class ClientTests {
         clientUI.eval("register caleb mypassword caleb@byu.edu");
         clientUI.eval("create mygame");
         String result = clientUI.eval("join white 1");
-        assertTrue(result.contains("Joined the game with"));
+        assertTrue(result.contains("Joined the game"));
         assertTrue(result.contains("WHITE"));
     }
 
@@ -201,7 +201,7 @@ public class ClientTests {
         clientUI.eval("register caleb mypassword caleb@byu.edu");
         clientUI.eval("create mygame");
         String result = clientUI.eval("observe 1");
-        assertTrue(result.contains("Now observing the game with ID"));
+        assertTrue(result.contains("Now observing the game"));
 
     }
 
