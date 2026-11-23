@@ -174,8 +174,9 @@ public class ClientUI {
 
 
         for (int i = 0; i < listOfGames.size(); i++){
-            formattedListOfGames.append(i+1).append(". Name: ").append(listOfGames.get(i).gameName()).append(" | White Username: ").append(listOfGames.get(i).whiteUsername()).append(" | Black Username: ").append(listOfGames.get(i).blackUsername()).append("\n");
-            ///formattedListOfGames.append(i+1).append(". ").append(listOfGames.get(i)).append("\n");
+            formattedListOfGames.append(i+1).append(". Name: ").append(listOfGames.get(i).gameName())
+                    .append(" | White Username: ").append(listOfGames.get(i).whiteUsername())
+                    .append(" | Black Username: ").append(listOfGames.get(i).blackUsername()).append("\n");
         }//would a map work better here?
 
         return String.format("List of chess games:\n%s", formattedListOfGames);
