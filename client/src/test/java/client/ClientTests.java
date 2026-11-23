@@ -1,13 +1,11 @@
 import client.ServerFacade;
 import dataaccess.DataAccessException;
-import dataaccess.UserDAO;
 import exception.ResponseException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.Server;
-import client.ClientMain;
-import ui.ClientUI;
+import client.ClientUI;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
