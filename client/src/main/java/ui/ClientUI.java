@@ -1,11 +1,12 @@
-package client;
+package ui;
 import chess.ChessBoard;
 import chess.ChessPiece;
 import chess.ChessPosition;
+import client.ServerFacade;
+import client.State;
 import exception.ResponseException;
 import model.AuthData;
 import model.GameData;
-import ui.EscapeSequences;
 
 import java.util.*;
 

@@ -1,6 +1,8 @@
 package client;
 
 
+import ui.ClientUI;
+
 public class ClientMain {
     public static void main(String[] args) {
         int port = 8080;
