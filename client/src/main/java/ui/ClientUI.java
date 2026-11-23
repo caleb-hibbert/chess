@@ -94,14 +94,26 @@ public class ClientUI {
                     yield listGames();
                 }
                 case "join" -> {
-                    if (params.length != 2){
-                        yield "Incorrect number of arguments entered for Join - use the format \"Join <WHITE|BLACK> <GAME_LIST_NUMBER>\"";
+                    if (params.length != 2 ){
+                        yield "Incorrect number of arguments entered for Join - use the format \"Join <WHITE|BLACK> <GAME_NUMBER>\"";
+                    }
+                    try{
+                        Integer.valueOf(params[1]);
+                    }
+                    catch (NumberFormatException exception){
+                        yield "Incorrect formatting of arguments entered for Join - use the format \"Observe <GAME_NUMBER>\"";
                     }
                     yield joinGame(params[0].toUpperCase(), Integer.parseInt(params[1]));
                 }
                 case "observe" -> {
                     if (params.length != 1){
-                        yield "Incorrect number of arguments entered for Observe - use the format \"Observe <GAME_LIST_NUMBER>\"";
+                        yield "Incorrect number of arguments entered for Observe - use the format \"Observe <GAME_NUMBER>\"";
+                    }
+                    try{
+                        Integer.valueOf(params[0]);
+                    }
+                    catch (NumberFormatException exception){
+                        yield "Incorrect formatting of arguments entered for Observe - use the format \"Observe <GAME_NUMBER>\"";
                     }
                     yield observeGame(Integer.parseInt(params[0]));
                 }
@@ -151,7 +163,7 @@ public class ClientUI {
     public String createGame(String gameName) throws ResponseException{
         assertSignedIn();
         int gameID = facade.createGame(gameName, authData.authToken());
-        return String.format("New game created with ID %d", gameID);
+        return String.format("New game created called %s", gameName);
     }
 
 
@@ -162,7 +174,8 @@ public class ClientUI {
 
 
         for (int i = 0; i < listOfGames.size(); i++){
-            formattedListOfGames.append(i+1).append(". ").append(listOfGames.get(i)).append("\n");
+            formattedListOfGames.append(i+1).append(". Name: ").append(listOfGames.get(i).gameName()).append(" | White Username: ").append(listOfGames.get(i).whiteUsername()).append(" | Black Username: ").append(listOfGames.get(i).blackUsername()).append("\n");
+            ///formattedListOfGames.append(i+1).append(". ").append(listOfGames.get(i)).append("\n");
         }//would a map work better here?
 
         return String.format("List of chess games:\n%s", formattedListOfGames);
@@ -181,7 +194,7 @@ public class ClientUI {
                             " Valid game numbers currently range from 1 to %d", gameListID, listOfGames.size());
         }
         printBoard(playerColor, gameListID);
-        return String.format("Joined the game with ID %d on the %s team", gameListID, playerColor);
+        return String.format("Joined the game %s on the %s team", listOfGames.get((gameListID-1)).gameName(), playerColor);
     }
 
 
@@ -198,7 +211,7 @@ public class ClientUI {
                             " Valid game numbers currently range from 1 to %d", gameListID, listOfGames.size());
         }
         printBoard("WHITE", gameListID);
-        return String.format("Now observing the game with list ID %d and game ID %d", gameListID, listOfGames.get(gameListID-1).gameID());
+        return String.format("Now observing the game %s", listOfGames.get((gameListID-1)).gameName());
     }
 
 
