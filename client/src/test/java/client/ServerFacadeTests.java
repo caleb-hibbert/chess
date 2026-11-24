@@ -1,22 +1,12 @@
-import client.ServerFacade;
-import dataaccess.AuthDAO;
+package client;
+
 import dataaccess.DataAccessException;
-import dataaccess.GameDAO;
-import dataaccess.UserDAO;
-import dataaccess.sql.MySqlAuthDAO;
-import dataaccess.sql.MySqlUserDAO;
-import dataaccess.sql.MySqlGameDAO;
 import exception.ResponseException;
-import model.AuthData;
-import model.CreateGameResult;
 import org.junit.jupiter.api.*;
 import server.Server;
-import service.AlreadyTakenException;
-import service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import io.javalin.http.Context;
 
 
 public class ServerFacadeTests {
